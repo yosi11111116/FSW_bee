@@ -1,0 +1,21 @@
+/************************************************************************
+ * Author : Hyeokjin Kweon
+ * 
+ * Last Modified : 2025 - 04 - 27
+ * 
+ * Purpose : Serial Comm. Core Module's Integrated header
+ ************************************************************************/
+
+#ifndef CFE_SRL_MODULE_ALL_H
+#define CFE_SRL_MODULE_ALL_H
+
+/*
+** Includes
+*/
+//#include "cfe.h"
+
+#include "cfe_srl_eventids.h"
+#include "cfe_srl_handle.h"
+#include "cfe_srl_priv.h"
+
+#endif /* CFE_SRL_MODULE_ALL_H*/
