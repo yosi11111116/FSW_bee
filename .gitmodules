@@ -22,3 +22,6 @@
 	path = tools/tblCRCTool
 	url = https://github.com/nasa/tblCRCTool.git
   branch = main
+[submodule "submodules/libgscsp"]
+	path = submodules/libgscsp
+	url = http://165.132.141.168:3000/ILOVEMOZART/libgscsp
