@@ -14,13 +14,15 @@ git submodule update --init --recursive
 - Before cFS build, build CSP first.
 - Run `cspbuild.sh` in `script` folder.
 > Must run this script from the **top-level directory**
+> ___
 > Like `./script/cspbuild.sh`
 
 - After CSP build, build cFS as you know
 - You can run `execute.sh` in `script`folder.
 > Must run script from the **top-level directory**
+> ___
 > Like `./script/execute.sh`
-> This script use `gdb`, so you enter `run (r)` in `gdb`
+>> This script use `gdb`, so you enter `run (r)` in `gdb`
 
 [![Build Linux](https://github.com/nasa/cfs/actions/workflows/build-cfs.yml/badge.svg)](https://github.com/nasa/cfs/actions/workflows/build-cfs.yml)
 [![Build RTEMS 5](https://github.com/nasa/cFS/actions/workflows/build-cfs-rtems5.yml/badge.svg)](https://github.com/nasa/cFS/actions/workflows/build-cfs-rtems5.yml)
