@@ -1,3 +1,27 @@
+# DSS & ACL FSW via cFS
+- Author: Kweon HyeokJin
+
+# Notes
+- Unlink several cFS submodule (e.g. cfe, ci_lab, sch_lab)
+> That means these modules managed as same repository
+- Add some submodules. **CSP**, **toolchain**
+
+# Build & Run notes
+- After `git pull`, execute lower scripts.
+```sh 
+git submodule update --init --recursive
+```
+- Before cFS build, build CSP first.
+- Run `cspbuild.sh` in `script` folder.
+> Must run this script from the **top-level directory**
+> Like `./script/cspbuild.sh`
+
+- After CSP build, build cFS as you know
+- You can run `execute.sh` in `script`folder.
+> Must run script from the **top-level directory**
+> Like `./script/execute.sh`
+> This script use `gdb`, so you enter `run (r)` in `gdb`
+
 [![Build Linux](https://github.com/nasa/cfs/actions/workflows/build-cfs.yml/badge.svg)](https://github.com/nasa/cfs/actions/workflows/build-cfs.yml)
 [![Build RTEMS 5](https://github.com/nasa/cFS/actions/workflows/build-cfs-rtems5.yml/badge.svg)](https://github.com/nasa/cFS/actions/workflows/build-cfs-rtems5.yml)
 
