@@ -25,3 +25,6 @@
 [submodule "submodules/libgscsp"]
 	path = submodules/libgscsp
 	url = http://165.132.141.168:3000/ILOVEMOZART/libgscsp
+[submodule "submodules/toochain"]
+	path = submodules/toochain
+	url = http://165.132.141.168:3000/ILOVEMOZART/OBC_Toolchain
