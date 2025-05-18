@@ -99,18 +99,16 @@ list(APPEND MISSION_GLOBAL_APPLIST sample_app sample_lib)
 SET(FT_INSTALL_SUBDIR "host/functional-test")
 
 # Each target board can have its own HW arch selection and set of included apps
-SET(MISSION_CPUNAMES cpu1)
+SET(MISSION_CPUNAMES cpu1 obc)
 
 SET(cpu1_PROCESSORID 1)
 SET(cpu1_APPLIST ci_lab to_lab sch_lab)
 SET(cpu1_FILELIST cfe_es_startup.scr)
 SET(cpu1_SYSTEM i686-linux-gnu)
 
-# CPU2 example.  This is not built by default anymore but
+# OBC example.  This is not built by default anymore but
 # serves as an example of how one would configure multiple cpus.
-# Add for obc build
-SET(MISSION_CPUNAMES obc) 
-
+# Add for obc build 
 SET(obc_PROCESSORID 2)
 SET(obc_APPLIST ci_lab to_lab sch_lab)
 SET(obc_FILELIST cfe_es_startup.scr)
