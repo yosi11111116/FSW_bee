@@ -123,8 +123,9 @@ all:
 	$(MAKE) --no-print-directory -C "$(O)" mission-all
 install:
 	$(MAKE) --no-print-directory -C "$(O)" DESTDIR="$(DESTDIR)" mission-install
+# libcsp install
 	cp ./submodules/libgscsp/build/cpu1/lib/libcsp-client.so ./build/exe/cpu1/cf/
-# 	cp ./submodules/libgscsp/build/obc/lib/libcsp-client.so ./build/exe/obc/cf/
+#	cp ./submodules/libgscsp/build/obc/lib/libcsp-client.so ./build/exe/obc/cf/
 
 prep $(O)/.prep:
 	mkdir -p "$(O)"
@@ -136,6 +137,7 @@ clean:
 
 distclean:
 	rm -rf "$(O)"
+	cd $(shell pwd)/submodules/libgscsp && python3 ./waf distclean
 
 # Grab lcov baseline before running tests
 test:
