@@ -126,6 +126,7 @@ install:
 # libcsp install
 	cp ./submodules/libgscsp/build/cpu1/lib/libcsp-client.so ./build/exe/cpu1/cf/
 #	cp ./submodules/libgscsp/build/obc/lib/libcsp-client.so ./build/exe/obc/cf/
+# libgpiod install
 
 prep $(O)/.prep:
 	mkdir -p "$(O)"
@@ -138,6 +139,7 @@ clean:
 distclean:
 	rm -rf "$(O)"
 	cd $(shell pwd)/submodules/libgscsp && python3 ./waf distclean
+	cd $(shell pwd)/submodules/libgpiod && make distclean
 
 # Grab lcov baseline before running tests
 test:

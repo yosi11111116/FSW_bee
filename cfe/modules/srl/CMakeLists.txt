@@ -34,6 +34,20 @@ add_library(srl STATIC ${srl_SOURCES})
 target_include_directories(srl PUBLIC fsw/inc)
 target_link_libraries(srl PRIVATE core_private)
 
-find_library(GPIOD_LIB gpiod REQUIRED)
-# Must enter the keyword `PRIVATE`
-target_link_libraries(srl PRIVATE ${GPIOD_LIB})
+#message(STATUS "PROJECT_SOURCE_DIR: ${PROJECT_SOURCE_DIR}")
+
+if (CMAKE_SYSTEM_PROCESSOR	STREQUAL "arm")
+    # For OBC (cross-compiled libgpiod)
+    target_include_directories(srl PRIVATE ${PROJECT_SOURCE_DIR}/../../../submodules/libgpiod/obc/include)
+    target_link_libraries(srl PRIVATE ${PROJECT_SOURCE_DIR}/submodules/libgpiod/obc/lib/libgpiod.a)
+else ()
+    # For local Linux host
+    # link libgpiod.so -> drop this
+    #find_library(GPIOD_LIB gpiod REQUIRED)
+    # Must enter the keyword `PRIVATE`
+    #target_link_libraries(srl PRIVATE ${GPIOD_LIB})
+
+    # link libgpiod.a
+    target_include_directories(srl PRIVATE /usr/include)
+    target_link_libraries(srl PRIVATE /usr/lib/x86_64-linux-gnu/libgpiod.a)
+endif()

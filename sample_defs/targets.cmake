@@ -108,10 +108,11 @@ SET(cpu1_SYSTEM i686-linux-gnu)
 
 # CPU2 example.  This is not built by default anymore but
 # serves as an example of how one would configure multiple cpus.
-SET(MISSION_CPUNAMES obc) # Add for obc build
+# Add for obc build
+SET(MISSION_CPUNAMES obc) 
 
-SET(cpu2_PROCESSORID 2)
-SET(cpu2_APPLIST ci_lab to_lab sch_lab)
-SET(cpu2_FILELIST cfe_es_startup.scr)
-SET(cpu2_SYSTEM obc)
+SET(obc_PROCESSORID 2)
+SET(obc_APPLIST ci_lab to_lab sch_lab)
+SET(obc_FILELIST cfe_es_startup.scr)
+SET(obc_SYSTEM obc)
 

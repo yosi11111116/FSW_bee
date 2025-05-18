@@ -30,4 +30,4 @@
 	url = http://165.132.141.168:3000/ILOVEMOZART/OBC_Toolchain
 [submodule "submodules/libgpiod"]
 	path = submodules/libgpiod
-	url = http://165.132.141.168:3000/ILOVEMOZART/libgpiod
+	url = http://165.132.141.168:3000/ILOVEMOZART/libgpiod_1.6.x
