@@ -27,6 +27,7 @@
 
 /*----------------------------------------------------------------
  *
+ * Serial Write API
  * Implemented per public API
  * See description in header file for argument/return detail
  *
@@ -61,6 +62,7 @@ int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Siz
 
 /*----------------------------------------------------------------
  *
+ * Serial Read API
  * Implemented per public API
  * See description in header file for argument/return detail
  *
@@ -94,6 +96,7 @@ int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t Tx
 
 /*----------------------------------------------------------------
  *
+ * Device Close API
  * Implemented per public API
  * See description in header file for argument/return detail
  *
@@ -112,6 +115,7 @@ int32 CFE_SRL_ApiClose(CFE_SRL_IO_Handle_t *Handle) {
 
 /*----------------------------------------------------------------
  *
+ * GPIO setting API
  * Implemented per public API
  * See description in header file for argument/return detail
  *
@@ -120,4 +124,22 @@ int32 CFE_SRL_ApiGpioSet(CFE_SRL_GPIO_Handle_t *Handle, bool Value) {
     if (Handle == NULL) return CFE_SRL_NULL_ERR;
     
     return CFE_SRL_BasicGpioSetValue(Handle, Value);
+}
+
+/*----------------------------------------------------------------
+ *
+ * CSP Transaction API
+ * Implemented per public API
+ * See description in header file for argument/return detail
+ *
+ *-----------------------------------------------------------------*/
+int32 CFE_SRL_ApiTransactionCSP(uint8_t Node, uint8_t Port, const void *TxData, int TxSize, void *RxData, int RxSize) {
+    int32 Status;
+
+    if (TxData == NULL || RxData == NULL) return CFE_SRL_NULL_ERR;
+
+    Status = CFE_SRL_TransactionCSP(Node, Port, TxData, TxSize, RxData, RxSize);
+    if (Status == -1) return Status; // Revise -1 to `CSP_TRANSACTION_ERR`
+
+    return Status;
 }

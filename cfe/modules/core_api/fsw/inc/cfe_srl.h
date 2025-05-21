@@ -47,4 +47,14 @@ int32 CFE_SRL_ApiClose(CFE_SRL_IO_Handle_t * Handle);
 /// @return Only `CFE_SRL_OK`(which is `0`) is success.
 int32 CFE_SRL_ApiGpioSet(CFE_SRL_GPIO_Handle_t *Handle, bool Value);
 
+/// @brief CSP Transaction API function via CSP CAN
+/// @param Node Destination Node addr
+/// @param Port Corresponed port number to specific request
+/// @param TxData Request
+/// @param TxSize Request size
+/// @param RxData Reply
+/// @param RxSize Reply size (`0` for no reply. `-1` for unknown size)
+/// @return `1` or `reply size` on success, `0` on failure. (error, unmatched length, timeout)
+int32 CFE_SRL_ApiTransactionCSP(uint8_t Node, uint8_t Port, const void *TxData, int TxSize, void *RxData, int RxSize);
+
 #endif /* CFE_SRL_H */

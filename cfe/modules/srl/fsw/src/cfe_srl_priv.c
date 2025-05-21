@@ -53,6 +53,7 @@ int32 CFE_SRL_EarlyInit(void) {
     
     /**
      * Serial Comm. Init
+     * Append other remain serial dev later
      */
     Status = CFE_SRL_HandleInit(&I2C0, "UANT_I2C", "/dev/i2c-0", SRL_DEVTYPE_I2C, CFE_SRL_I2C0_MUTEX_IDX);
     if (Status != CFE_SRL_OK) {
@@ -84,6 +85,16 @@ int32 CFE_SRL_EarlyInit(void) {
     }
     CFE_ES_WriteToSysLog("%s: GPIO Initialized.", __func__);
 
+    /**
+     * CSP Init
+     */
+    Status = CFE_SRL_InitCSP();
+    if (Status != CFE_SRL_OK) {
+        CFE_ES_WriteToSysLog("%s: CSP Initialization failed! RC=%d\n", __func__, Status);
+        return -1; // Revise to `CSP_INIT_ERR`
+    }
+    CFE_ES_WriteToSysLog("%s: CSP Initializaed.", __func__);
+    
     return CFE_SRL_OK;
 }
 

@@ -35,4 +35,15 @@ typedef struct {
     uint32_t Options;
 } CFE_SRL_CSP_Node_Config_t;
 
+
+
+/**
+ * Declaration of CSP function
+ * Do NOT Call these function directly
+ */
+int CFE_SRL_RouteInitCSP(void);
+int CFE_SRL_NodeConfigCSP(uint8_t Node, uint8_t Priority, uint32_t Timeout, uint32_t Options);
+int CFE_SRL_GetNodeConfigCSP(uint8_t Node, CFE_SRL_CSP_Node_Config_t *Config);
+int CFE_SRL_InitCSP(void);
+int CFE_SRL_TransactionCSP(uint8_t Node, uint8_t Port, const void *TxData, int TxSize, void *RxData, int RxSize);
 #endif /* CFE_SRL_CSP_H */

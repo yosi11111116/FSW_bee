@@ -71,6 +71,10 @@ int CFE_SRL_GetNodeConfigCSP(uint8_t Node, CFE_SRL_CSP_Node_Config_t *Config) {
     return CFE_SRL_OK;
 }
 
+/**
+ * CSP Integrated Initialization function
+ * Called by Early Init function of CFE SRL module
+ */
 int CFE_SRL_InitCSP(void) {
     int Status;
 
@@ -124,7 +128,7 @@ int CFE_SRL_TransactionCSP(uint8_t Node, uint8_t Port, const void *TxData, int T
     if (NodeConfig[Node] == NULL || TxData == NULL || RxData == NULL) return CFE_SRL_NULL_ERR;
 
     Status = csp_transaction_w_opts(NodeConfig[Node]->Priority, Node, Port, NodeConfig[Node]->Timeout, TxData, TxSize, RxData, RxSize, NodeConfig[Node]);
-    if (Status == 0) return -1; // Revise to `CSP_TRANSACTION_ERR`
+    if (Status == 0) return Status; // Revise to `CSP_TRANSACTION_ERR`
 
     // 1 or `reply size` on success
     return Status;

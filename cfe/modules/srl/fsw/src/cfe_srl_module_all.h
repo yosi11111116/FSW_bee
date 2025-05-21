@@ -17,5 +17,6 @@
 #include "cfe_srl_eventids.h"
 #include "cfe_srl_handle.h"
 #include "cfe_srl_priv.h"
+#include "cfe_srl_csp.h"
 
 #endif /* CFE_SRL_MODULE_ALL_H*/
