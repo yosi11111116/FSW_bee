@@ -139,6 +139,7 @@ clean:
 distclean:
 	rm -rf "$(O)"
 	cd $(shell pwd)/submodules/libgscsp && python3 ./waf distclean
+	rm -rf $(shell pwd)/submodules/libgpiod/obc
 	cd $(shell pwd)/submodules/libgpiod && make distclean
 
 # Grab lcov baseline before running tests
