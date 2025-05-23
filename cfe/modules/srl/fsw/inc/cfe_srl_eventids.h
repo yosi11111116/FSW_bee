@@ -65,6 +65,12 @@ typedef enum {
     CFE_SRL_PARTIAL_READ_ERR,
     CFE_SRL_CLOSE_ERR,
 
+
+    /**
+     * CSP
+     */
+    CFE_SRL_TYPE_UNSUPPORTED,
+
 } CFE_SRL_Error_Type_t;
 
 #endif /* CFE_SRL_EVENTS_H */

@@ -57,4 +57,26 @@ int32 CFE_SRL_ApiGpioSet(CFE_SRL_GPIO_Handle_t *Handle, bool Value);
 /// @return `1` or `reply size` on success, `0` on failure. (error, unmatched length, timeout)
 int32 CFE_SRL_ApiTransactionCSP(uint8_t Node, uint8_t Port, const void *TxData, int TxSize, void *RxData, int RxSize);
 
+
+/// @brief Get particular type of parameter of CSP device
+/// Example: **UTRX baud rate get**
+/// @code
+/// CFE_SRL_ApiGetRparamCSP(GS_PARAM_UINT32, CSP_NODE_UTRX, 1, 0x0004, Value);
+/// @endcode
+/// @param Type Parameter type. Look up header `gs/param/rparam.h`
+/// @param Node CSP device node
+/// @param TableId CSP device table ID
+/// @param Addr Parameter address in table
+/// @param Param Pointer of buffer
+/// @return Only `CFE_SRL_OK`(which is `0`) is success
+int32 CFE_SRL_ApiGetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param);
+
+/// @brief Set particluar type of parameter of CSP device
+/// @param Type Parameter type. Look up header `gs/param/rparam.h`
+/// @param Node CSP device node
+/// @param TableId CSP device table ID
+/// @param Addr Parameter address in table
+/// @param Param Pointer of buffer
+/// @return Only `CFE_SRL_OK`(which is `0`) is success
+int32 CFE_SRL_ApiSetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param);
 #endif /* CFE_SRL_H */
