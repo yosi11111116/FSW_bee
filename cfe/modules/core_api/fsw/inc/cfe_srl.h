@@ -58,7 +58,7 @@ int32 CFE_SRL_ApiGpioSet(CFE_SRL_GPIO_Handle_t *Handle, bool Value);
 int32 CFE_SRL_ApiTransactionCSP(uint8_t Node, uint8_t Port, const void *TxData, int TxSize, void *RxData, int RxSize);
 
 
-/// @brief Get particular type of parameter of CSP device
+/// @brief Get particular type of parameter of CSP device.
 /// Example: **UTRX baud rate get**
 /// @code
 /// CFE_SRL_ApiGetRparamCSP(GS_PARAM_UINT32, CSP_NODE_UTRX, 1, 0x0004, Value);

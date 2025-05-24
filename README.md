@@ -35,6 +35,7 @@ git submodule update --init --recursive
 
 # Notandum
 - **Never commit** to the **main** branch
+- **Never** revise build script. If you want to change, contact to DSS FSW team.
 - If there is a unexpected error, contact to DSS FSW team.
 
 [![Build Linux](https://github.com/nasa/cfs/actions/workflows/build-cfs.yml/badge.svg)](https://github.com/nasa/cfs/actions/workflows/build-cfs.yml)
