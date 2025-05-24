@@ -67,8 +67,11 @@ message(STATUS "GPIOD INCLUDE: ${PROJECT_SOURCE_DIR}/../../../submodules/libgpio
 
 if (CMAKE_SYSTEM_PROCESSOR	STREQUAL "arm")
     # For OBC (cross-compiled libgpiod)
+    # gpiod
     target_include_directories(srl PRIVATE ${PROJECT_SOURCE_DIR}/../../../submodules/libgpiod/obc/include)
     target_link_libraries(srl PRIVATE ${PROJECT_SOURCE_DIR}/../../../submodules/libgpiod/obc/lib/libgpiod.a)
+    # link csp
+    target_link_libraries(srl PRIVATE ${PROJECT_SOURCE_DIR}/../../../submodules/libgscsp/build/obc/lib/libcsp-client.a)
 else ()
     # For local Linux host
     # link libgpiod.so -> drop this
@@ -79,4 +82,7 @@ else ()
     # link libgpiod.a
     target_include_directories(srl PRIVATE /usr/include)
     target_link_libraries(srl PRIVATE /usr/lib/x86_64-linux-gnu/libgpiod.a)
+
+    # link csp
+    target_link_libraries(srl PRIVATE ${PROJECT_SOURCE_DIR}/../../../submodules/libgscsp/build/cpu1/lib/libcsp-client.a)
 endif()
