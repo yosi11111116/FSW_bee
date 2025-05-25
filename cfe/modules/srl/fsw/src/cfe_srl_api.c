@@ -133,7 +133,7 @@ int32 CFE_SRL_ApiGpioSet(CFE_SRL_GPIO_Handle_t *Handle, bool Value) {
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-int32 CFE_SRL_ApiTransactionCSP(uint8_t Node, uint8_t Port, const void *TxData, int TxSize, void *RxData, int RxSize) {
+int32 CFE_SRL_ApiTransactionCSP(uint8_t Node, uint8_t Port, void *TxData, int TxSize, void *RxData, int RxSize) {
     int32 Status;
 
     if (TxData == NULL || RxData == NULL) return CFE_SRL_NULL_ERR;

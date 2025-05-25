@@ -14,7 +14,7 @@
 
 #include "cfe_srl_csp.h"
 
-const char *SatName = "COSMIC"; // Revise name according to specific misison
+const char *SatName = "BEE-1000"; // Revise name according to specific misison
 
 /**
  * Indexed by CSP Node number.
@@ -24,8 +24,8 @@ CFE_SRL_CSP_Node_Config_t *NodeConfig[32] = {0}; // Not mandatory
 int CFE_SRL_RouteInitCSP(void) {
     int Status;
 
-    csp_iface_t *InterfaceCAN = NULL;
-    csp_iface_t *InterfaceI2C = NULL;
+    csp_iface_t *InterfaceCAN;
+    csp_iface_t *InterfaceI2C;
 
     Status = csp_route_start_task(CSP_TASK_STACK_SIZE(1), GS_THREAD_PRIORITY_HIGH);
     if (Status != CSP_ERR_NONE) {
@@ -45,17 +45,28 @@ int CFE_SRL_RouteInitCSP(void) {
     /**
      * CSP I2C Initialization
      */
-    Status = gs_csp_i2c_init2(0, 0, "p31u", false, &InterfaceI2C);
-    if (Status != GS_OK) return -1; // Revise to 
+    Status = gs_csp_i2c_init2(0, 0, "BPX", false, &InterfaceI2C); // I2C/CSP ADDR `0x07`
+    if (Status != GS_OK) {
+        CFE_ES_WriteToSysLog("%s: CSP I2C Init failed! NO RC", __func__);
+        return -1; // Revise to `CSP_I2C_INIT_ERR`
+    }
+
 
     /**
-     * CSP Routing Table Set
+     * CSP Routing Table setting
      */
-    /* CAN */
-    Status = csp_rtable_set(CSP_NODE_UTRX, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NO_VIA_ADDRESS);
-    if (Status != CSP_ERR_NONE) return -1; // Revise to `CSP_RTABLE_ERR`
 
-    Status = csp_rtable_set(CSP_NODE_STRX, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NO_VIA_ADDRESS);
+    /* CAN */
+    Status = csp_rtable_set(CSP_NODE_ACU, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NO_VIA_ADDRESS);
+    if (Status != CSP_ERR_NONE) return -1;
+
+    Status = csp_rtable_set(CSP_NODE_PDU, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NO_VIA_ADDRESS);
+    if (Status != CSP_ERR_NONE) return -1;
+
+    Status = csp_rtable_set(CSP_NODE_DOCK, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NO_VIA_ADDRESS);
+    if (Status != CSP_ERR_NONE) return -1;
+
+    Status = csp_rtable_set(CSP_NODE_UTRX, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NO_VIA_ADDRESS);
     if (Status != CSP_ERR_NONE) return -1; // Revise to `CSP_RTABLE_ERR`
 
     Status = csp_rtable_set(CSP_NODE_GS_KISS, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NODE_UTRX);
@@ -63,8 +74,8 @@ int CFE_SRL_RouteInitCSP(void) {
 
     Status = csp_rtable_set(CSP_NODE_GSTRX, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NODE_UTRX);
     if (Status != CSP_ERR_NONE) return -1; // Revise to `CSP_RTABLE_ERR`
-    /* I2C */
-    Status = csp_rtable_set(CSP_NODE_EPS, CSP_NODE_FIX_MASK, InterfaceI2C, CSP_NO_VIA_ADDRESS);
+    /* I2C - BPX */
+    Status = csp_rtable_set(CSP_NODE_BAT, CSP_NODE_FIX_MASK, InterfaceI2C, CSP_NO_VIA_ADDRESS);
     if (Status != CSP_ERR_NONE) return -1; // Revise to `CSP_RTABLE_ERR`
     
     return CFE_SRL_OK;
@@ -132,9 +143,11 @@ int CFE_SRL_InitCSP(void) {
      * Register Node Configuration to each Node.
      * If Node appended(or revised), insert(or revise) the function.
      */
-    CFE_SRL_NodeConfigCSP(CSP_NODE_EPS, CSP_PRIO_NORM, CSP_TIMEOUT(1), CSP_O_CRC32);
+    CFE_SRL_NodeConfigCSP(CSP_NODE_ACU, CSP_PRIO_NORM, CSP_TIMEOUT(1), CSP_O_CRC32);
+    CFE_SRL_NodeConfigCSP(CSP_NODE_PDU, CSP_PRIO_NORM, CSP_TIMEOUT(1), CSP_O_CRC32);
+    CFE_SRL_NodeConfigCSP(CSP_NODE_DOCK, CSP_PRIO_NORM, CSP_TIMEOUT(1), CSP_O_CRC32);
     CFE_SRL_NodeConfigCSP(CSP_NODE_UTRX, CSP_PRIO_NORM, CSP_TIMEOUT(1), CSP_O_CRC32);
-    CFE_SRL_NodeConfigCSP(CSP_NODE_STRX, CSP_PRIO_NORM, CSP_TIMEOUT(1), CSP_O_CRC32);
+    CFE_SRL_NodeConfigCSP(CSP_NODE_BAT, CSP_PRIO_NORM, CSP_TIMEOUT(1), CSP_O_CRC32);
 
     CFE_SRL_NodeConfigCSP(CSP_NODE_GS_KISS, CSP_PRIO_HIGH, CSP_TIMEOUT(3), CSP_O_CRC32);
     CFE_SRL_NodeConfigCSP(CSP_NODE_GSTRX, CSP_PRIO_HIGH, CSP_TIMEOUT(3), CSP_O_CRC32);

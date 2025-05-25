@@ -11,6 +11,11 @@
 */
 #include "cfe_srl_module_all.h"
 
+#define I2C_READY
+#define CAN_READY
+#define UART_READY
+#define RS422_READY
+#define GPIO_READY
 /**
  * Global data
  * 
@@ -43,7 +48,7 @@ uint32 GpioLineArr[CFE_SRL_TOT_GPIO_NUM] = {28, 29, 3, 5, 4};
  * 
  *-----------------------------------------------------------------*/
 int32 CFE_SRL_EarlyInit(void) {
-    int Status;
+    int32 Status;
 
     Status = CFE_SRL_PriorInit();
     if (Status != CFE_SRL_OK) {
@@ -51,11 +56,15 @@ int32 CFE_SRL_EarlyInit(void) {
     }
     CFE_ES_WriteToSysLog("%s: Prior Initialized.", __func__);
     
+/****************************************************
+ * Serial Comm. Init
+ * Append other remain serial dev later
+ ***************************************************/
     /**
-     * Serial Comm. Init
-     * Append other remain serial dev later
+     * I2C Init
      */
-    Status = CFE_SRL_HandleInit(&I2C0, "UANT_I2C", "/dev/i2c-0", SRL_DEVTYPE_I2C, CFE_SRL_I2C0_MUTEX_IDX);
+#ifdef I2C_READY
+    Status = CFE_SRL_HandleInit(&I2C0, "UANT_I2C", "/dev/i2c-0", SRL_DEVTYPE_I2C, CFE_SRL_I2C0_MUTEX_IDX, 0);
     if (Status != CFE_SRL_OK) {
         CFE_ES_WriteToSysLog("%s: I2C0 Initialization failed! RC=%d\n", __func__, Status);
         return -1;
@@ -63,16 +72,35 @@ int32 CFE_SRL_EarlyInit(void) {
     CFE_ES_WriteToSysLog("%s: I2C0 Initialized. FD : %d | Name : %s | DevName : %s | MutexID : %u | Status : %u |", 
                     __func__, I2C0->FD, ((CFE_SRL_Global_Handle_t *)I2C0)->Name, ((CFE_SRL_Global_Handle_t *)I2C0)->DevName, ((CFE_SRL_Global_Handle_t *)I2C0)->MutexID, ((CFE_SRL_Global_Handle_t *)I2C0)->Status);
 
+#endif
 
-    Status = CFE_SRL_HandleInit(&CAN0, "CubeCAN", "can0", SRL_DEVTYPE_CAN, CFE_SRL_CAN0_MUTEX_IDX);
+    /**
+     * CAN Init
+     */
+#ifdef CAN_READY
+    Status = CFE_SRL_HandleInit(&CAN0, "CubeCAN", "can0", SRL_DEVTYPE_CAN, CFE_SRL_CAN0_MUTEX_IDX, 0);
     if (Status != CFE_SRL_OK) {
         CFE_ES_WriteToSysLog("%s: CAN0 Initialization failed! RC=%d\n", __func__, Status);
         return -1;
     }
     CFE_ES_WriteToSysLog("%s: CAN0 Initialized. FD : %d | Name : %s | DevName : %s | MutexID : %u | Status : %u |", 
         __func__, CAN0->FD, ((CFE_SRL_Global_Handle_t *)CAN0)->Name, ((CFE_SRL_Global_Handle_t *)CAN0)->DevName, ((CFE_SRL_Global_Handle_t *)CAN0)->MutexID, ((CFE_SRL_Global_Handle_t *)CAN0)->Status);
+#endif
     
+    /**
+     * RS 422 Init
+     */
+#ifdef RS422_READY
+    Status = CFE_SRL_HandleInit(&RS422, "STX_RS422", "/dev/ttyS0", SRL_DEVTYPE_RS422, CFE_SRL_RS422_MUTEX_IDX, 3000000);
+    if (Status != CFE_SRL_OK) {
+        CFE_ES_WriteToSysLog("%s: RS422 Initialization failed! RC=%d | %s\n", __func__, Status, strerror(RS422->__errno));
+        return -1;
+    }
+    CFE_ES_WriteToSysLog("%s: RS422 Initialized. FD : %d | Name : %s | DevName : %s | MutexID : %u | Status : %u |", 
+        __func__, RS422->FD, ((CFE_SRL_Global_Handle_t *)RS422)->Name, ((CFE_SRL_Global_Handle_t *)RS422)->DevName, ((CFE_SRL_Global_Handle_t *)RS422)->MutexID, ((CFE_SRL_Global_Handle_t *)RS422)->Status);
+#endif
 
+#ifdef GPIO_READY
     /**
      * GPIO Init
      */
@@ -84,6 +112,7 @@ int32 CFE_SRL_EarlyInit(void) {
         }
     }
     CFE_ES_WriteToSysLog("%s: GPIO Initialized.", __func__);
+#endif
 
     /**
      * CSP Init

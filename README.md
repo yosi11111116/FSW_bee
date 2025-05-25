@@ -1,4 +1,4 @@
-# DSS & ACL FSW via cFS
+# BEE-1000 FSW
 - Author: Kweon HyeokJin
 
 # Notes
