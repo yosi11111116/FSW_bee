@@ -43,7 +43,7 @@ uint32 GpioLineArr[CFE_SRL_TOT_GPIO_NUM] = {28, 29, 3, 5, 4};
  * 
  *-----------------------------------------------------------------*/
 int32 CFE_SRL_EarlyInit(void) {
-    int Status;
+    int32 Status;
 
     Status = CFE_SRL_PriorInit();
     if (Status != CFE_SRL_OK) {
