@@ -16,18 +16,28 @@
  * 
  * Serial Handle for each srl comm.
  */
-CFE_SRL_I2C_Handle_t *I2C0;
-CFE_SRL_I2C_Handle_t *I2C1;
-CFE_SRL_I2C_Handle_t *I2C2;
-CFE_SRL_UART_Handle_t *UART;
-CFE_SRL_RS422_Handle_t *RS422;
-CFE_SRL_CAN_Handle_t *CAN0;
+CFE_SRL_IO_Handle_t *I2C0;
+CFE_SRL_IO_Handle_t *I2C1;
+CFE_SRL_IO_Handle_t *I2C2;
+CFE_SRL_IO_Handle_t *UART;
+CFE_SRL_IO_Handle_t *RS422;
+CFE_SRL_IO_Handle_t *CAN0;
 
-CFE_SRL_GPIO_Handle_t *GPIO[CFE_SRL_TOT_GPIO_NUM];
+/**
+ * After develop completed, init handle via this table 
+ * During development, this type of init process not compatible to each device unit test
+ */
+CFE_SRL_IO_Handle_t *HandleTable[CFE_SRL_GNRL_DEVICE_NUM];
+
+const char *GeneralHandleNameTable[CFE_SRL_GNRL_DEVICE_NUM] = {};
+const char *DeviceNameTable[CFE_SRL_GNRL_DEVICE_NUM] = {};
+const CFE_SRL_DevType_t DeviceTypeTable[CFE_SRL_GNRL_DEVICE_NUM] = {};
 
 /**
  * GPIO Global Data - Must Check Real value and revise this
  */
+CFE_SRL_GPIO_Handle_t *GPIO[CFE_SRL_TOT_GPIO_NUM];
+
 const char *GpioNameArr[CFE_SRL_TOT_GPIO_NUM] = {(char *)"ADCS EN", (char *)"ADCS BOOT", (char *)"PAY1-1", (char *)"PAY1-2", (char *)"GRX-PPS"};
 const char *GpioPathArr[CFE_SRL_TOT_GPIO_NUM] = {(char *)"/dev/gpiochip0", (char *)"/dev/gpiochip0", (char *)"/dev/gpiochip2", (char *)"/dev/gpiochip2", (char *)"/dev/gpiochip2"};
 uint32 GpioLineArr[CFE_SRL_TOT_GPIO_NUM] = {28, 29, 3, 5, 4};
@@ -55,7 +65,8 @@ int32 CFE_SRL_EarlyInit(void) {
      * Serial Comm. Init
      * Append other remain serial dev later
      */
-    Status = CFE_SRL_HandleInit(&I2C0, "UANT_I2C", "/dev/i2c-0", SRL_DEVTYPE_I2C, CFE_SRL_I2C0_MUTEX_IDX);
+#ifndef CFE_SRL_UT
+    Status = CFE_SRL_HandleInit(&I2C0, "UANT_I2C", "/dev/pts/3", SRL_DEVTYPE_I2C, CFE_SRL_I2C0_MUTEX_IDX);
     if (Status != CFE_SRL_OK) {
         CFE_ES_WriteToSysLog("%s: I2C0 Initialization failed! RC=%d\n", __func__, Status);
         return -1;
@@ -71,7 +82,6 @@ int32 CFE_SRL_EarlyInit(void) {
     }
     CFE_ES_WriteToSysLog("%s: CAN0 Initialized. FD : %d | Name : %s | DevName : %s | MutexID : %u | Status : %u |", 
         __func__, CAN0->FD, ((CFE_SRL_Global_Handle_t *)CAN0)->Name, ((CFE_SRL_Global_Handle_t *)CAN0)->DevName, ((CFE_SRL_Global_Handle_t *)CAN0)->MutexID, ((CFE_SRL_Global_Handle_t *)CAN0)->Status);
-    
 
     /**
      * GPIO Init
@@ -94,11 +104,34 @@ int32 CFE_SRL_EarlyInit(void) {
         return -1; // Revise to `CSP_INIT_ERR`
     }
     CFE_ES_WriteToSysLog("%s: CSP Initializaed.", __func__);
+
+#else
+    Status = CFE_SRL_HandleInit(&RS422, "STX 422", "/dev/pts/3", SRL_DEVTYPE_RS422, CFE_SRL_RS422_MUTEX_IDX);
+    if (Status != CFE_SRL_OK) {
+        CFE_ES_WriteToSysLog("%s: RS422 Initialization failed! RC=%d\n", __func__, Status);
+        return -1; // Revise to `UART_INIT_ERR`
+    }
+    CFE_ES_WriteToSysLog("%s: RS422 Initialized. FD : %d | Name : %s | DevName : %s | MutexID : %u | Status : %u |", 
+        __func__, RS422->FD, ((CFE_SRL_Global_Handle_t *)RS422)->Name, ((CFE_SRL_Global_Handle_t *)RS422)->DevName, ((CFE_SRL_Global_Handle_t *)RS422)->MutexID, ((CFE_SRL_Global_Handle_t *)RS422)->Status);
+#endif
     
     return CFE_SRL_OK;
 }
 
 
+
+/**
+ * Private Get Handle function
+ */
+/*----------------------------------------------------------------
+ *
+ * Implemented per public API
+ * See description in header file for argument/return detail
+ *
+ *-----------------------------------------------------------------*/
+CFE_SRL_IO_Handle_t *CFE_SRL_GetHandle(CFE_SRL_Handle_Indexer_t Index) {
+    return HandleTable[Index];
+}
 
 /**
  * Private Write function
@@ -110,7 +143,7 @@ int32 CFE_SRL_EarlyInit(void) {
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-int32 CFE_SRL_WriteI2C(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Size, uint8_t Addr) {
+int32 CFE_SRL_WriteI2C(CFE_SRL_IO_Handle_t *Handle, void *Data, size_t Size, uint8_t Addr) {
     int32 Status;
     CFE_SRL_DevType_t DevType;
 
@@ -149,7 +182,7 @@ int32 CFE_SRL_WriteI2C(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Siz
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-int32 CFE_SRL_WriteUART(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Size) {
+int32 CFE_SRL_WriteUART(CFE_SRL_IO_Handle_t *Handle, void *Data, size_t Size) {
     int32 Status;
     CFE_SRL_DevType_t DevType;
     if (Handle == NULL || Data == NULL) return CFE_SRL_NULL_ERR;
@@ -178,7 +211,7 @@ int32 CFE_SRL_WriteUART(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Si
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-int32 CFE_SRL_WriteCAN(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Size, uint32_t Addr) {
+int32 CFE_SRL_WriteCAN(CFE_SRL_IO_Handle_t *Handle, void *Data, size_t Size, uint32_t Addr) {
     int32 Status;
     CFE_SRL_DevType_t DevType;
     struct can_frame Frame;
@@ -222,7 +255,7 @@ int32 CFE_SRL_WriteCAN(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Siz
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-int32 CFE_SRL_ReadI2C(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t TxSize, void *RxData, size_t RxSize, uint32_t Addr) {
+int32 CFE_SRL_ReadI2C(CFE_SRL_IO_Handle_t *Handle, void *TxData, size_t TxSize, void *RxData, size_t RxSize, uint32_t Addr) {
     int32 Status;
     CFE_SRL_DevType_t DevType;
 
@@ -252,7 +285,7 @@ int32 CFE_SRL_ReadI2C(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t Tx
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-int32 CFE_SRL_ReadUART(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t TxSize, void *RxData, size_t RxSize, uint32_t Timeout) {
+int32 CFE_SRL_ReadUART(CFE_SRL_IO_Handle_t *Handle, void *TxData, size_t TxSize, void *RxData, size_t RxSize, uint32_t Timeout) {
     // write -> poll read
     int Status;
     CFE_SRL_DevType_t DevType;
@@ -283,7 +316,7 @@ int32 CFE_SRL_ReadUART(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t T
     return CFE_SRL_OK;
 }
 
-int32 CFE_SRL_ReadCAN(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t TxSize, void *RxData, size_t RxSize, uint32_t Timeout, uint32_t Addr) {
+int32 CFE_SRL_ReadCAN(CFE_SRL_IO_Handle_t *Handle, void *TxData, size_t TxSize, void *RxData, size_t RxSize, uint32_t Timeout, uint32_t Addr) {
     int32 Status;
     CFE_SRL_DevType_t DevType;
 

@@ -3,7 +3,7 @@
  * 
  * Last Modified : 2025 - 04 - 27
  * 
- * Brief : Serial Comm. Core Module's Event ID. 
+ * Brief : Serial Comm. Core Module's basic hardware function. 
  *         Do NOT use this function directly in App layer
  ************************************************************************/
 #include <fcntl.h>
@@ -12,7 +12,6 @@
 #include <sys/select.h>
 
 #include <poll.h>
-
 
 #include "cfe_srl_basic.h"
 

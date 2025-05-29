@@ -9,8 +9,11 @@ CFE_SRL_Global_Handle_t GlobalHandle[CFE_SRL_GLOBAL_HANDLE_NUM] = {0};
 CFE_SRL_Open_Device_Handle_t DeviceTable[CFE_SRL_GLOBAL_HANDLE_NUM] = {0};
 // pthread_mutex_t GlobalHandleMutex;
 
+#ifndef CFE_SRL_UT
 char *DeviceList[CFE_SRL_GNRL_DEVICE_NUM] = {(char *)"/dev/i2c-0\0", (char *)"/dev/i2c-1\0", (char *)"/dev/i2c-2\0", (char *)"/dev/ttyS0\0", (char *)"/dev/ttyS1\0", (char *)"can0\0"};
-
+#else
+char *DeviceList[CFE_SRL_GNRL_DEVICE_NUM] = {(char *)"/dev/pts/3\0", (char *)"/dev/i2c-1\0", (char *)"/dev/i2c-2\0", (char *)"/dev/ttyS0\0", (char *)"/dev/ttyS1\0", (char *)"can0\0"};
+#endif
 int CFE_SRL_DeviceTableInit(void) {
     memset(DeviceTable, 0, sizeof(DeviceTable));
 
@@ -229,7 +232,7 @@ int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const cha
     // Allocate the result Handle
     *Handle = TempHandle;
     
-    if (DevType == SRL_DEVTYPE_UART && DevType == SRL_DEVTYPE_RS422) {
+    if (DevType == SRL_DEVTYPE_UART || DevType == SRL_DEVTYPE_RS422) {
         Status = CFE_SRL_BasicSetUART(*Handle, 115200);
 
         if (Status != CFE_SRL_OK) return CFE_SRL_UART_INIT_ERR;

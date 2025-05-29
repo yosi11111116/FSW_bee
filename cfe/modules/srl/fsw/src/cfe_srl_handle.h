@@ -2,24 +2,20 @@
 #define CFE_SRL_HANDLE_H
 
 
-#define CFE_SRL_UT
+#define CFE_SRL_STUB
+#undef CFE_SRL_STUB
 
+#define CFE_SRL_UT
 
 #include <stdint.h>
 
-#ifdef CFE_SRL_UT
+#ifdef CFE_SRL_STUB
 #include "cfe_srl_io_stub.h"
 #else
 #include "cfe_srl_io.h"
 #endif
 
 #include "cfe_srl_mutex.h"
-
-
-typedef CFE_SRL_IO_Handle_t     CFE_SRL_I2C_Handle_t;
-typedef CFE_SRL_IO_Handle_t     CFE_SRL_UART_Handle_t;
-typedef CFE_SRL_IO_Handle_t     CFE_SRL_RS422_Handle_t;
-typedef CFE_SRL_IO_Handle_t     CFE_SRL_CAN_Handle_t;
 
 /**
  * Declaration of Struct & Values are located in `cfe_srl_basic.h`

@@ -163,7 +163,7 @@ int CFE_SRL_TransactionCSP(uint8_t Node, uint8_t Port, void *TxData, int TxSize,
  * These functions wrapped to API function
  * Do NOT call this function directly
  */
-int CFE_SRL_GetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param) {
+int CFE_SRL_GetRparamCSP(uint8_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param) {
     int Status;
     CFE_SRL_CSP_Node_Config_t *Config;
     if (Param == NULL) return CFE_SRL_NULL_ERR;
@@ -212,7 +212,7 @@ int CFE_SRL_GetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t
     return CFE_SRL_OK;
 }
 
-int CFE_SRL_SetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param) {
+int CFE_SRL_SetRparamCSP(uint8_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param) {
     int Status;
     CFE_SRL_CSP_Node_Config_t *Config;
     if (Param == NULL) return CFE_SRL_NULL_ERR;
