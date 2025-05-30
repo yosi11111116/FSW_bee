@@ -26,7 +26,7 @@ int CFE_SRL_Open(CFE_SRL_IO_Handle_t *Handle, const char *DevName, int Option) {
 }
 
 int CFE_SRL_Write(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Size) {
-    int Status;
+    // int Status;
     ssize_t WriteBytes;
 
     if (Handle == NULL || Data == NULL) return CFE_SRL_NULL_ERR;
@@ -54,7 +54,7 @@ int CFE_SRL_Write(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Size) {
 }
 
 int CFE_SRL_Read(CFE_SRL_IO_Handle_t *Handle, void *Data, size_t Size, uint32_t Timeout) {
-    int Status;
+    // int Status;
     ssize_t ReadBytes;
 
     if (Handle == NULL || Data == NULL) return CFE_SRL_NULL_ERR;
@@ -96,7 +96,7 @@ int CFE_SRL_TransactionI2C(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size
     MsgI2C[0].addr = (uint16_t)Addr;
     MsgI2C[0].flags = 0;    // Write flag
     MsgI2C[0].len = TxSize;
-    MsgI2C[0].buf = TxData;
+    MsgI2C[0].buf = (uint8_t *)TxData;
 
     // Second Message - Read
     MsgI2C[1].addr = (uint16_t)Addr;

@@ -11,11 +11,11 @@
 */
 #include "cfe_srl_module_all.h"
 
-#define I2C_READY
-#define CAN_READY
-#define UART_READY
-#define RS422_READY
-#define GPIO_READY
+// #define I2C0_READY
+// #define CAN_READY
+// #define UART_READY
+// #define RS422_READY
+// #define GPIO_READY
 /**
  * Global data
  * 
@@ -28,11 +28,21 @@ CFE_SRL_UART_Handle_t *UART;
 CFE_SRL_RS422_Handle_t *RS422;
 CFE_SRL_CAN_Handle_t *CAN0;
 
-CFE_SRL_GPIO_Handle_t *GPIO[CFE_SRL_TOT_GPIO_NUM];
+/**
+ * After develop completed, init handle via this table 
+ * During development, this type of init process not compatible to each device unit test
+ */
+CFE_SRL_IO_Handle_t *HandleTable[CFE_SRL_GNRL_DEVICE_NUM];
+
+const char *GeneralHandleNameTable[CFE_SRL_GNRL_DEVICE_NUM] = {};
+const char *DeviceNameTable[CFE_SRL_GNRL_DEVICE_NUM] = {};
+const CFE_SRL_DevType_t DeviceTypeTable[CFE_SRL_GNRL_DEVICE_NUM] = {};
 
 /**
  * GPIO Global Data - Must Check Real value and revise this
  */
+CFE_SRL_GPIO_Handle_t *GPIO[CFE_SRL_TOT_GPIO_NUM];
+
 const char *GpioNameArr[CFE_SRL_TOT_GPIO_NUM] = {(char *)"ADCS EN", (char *)"ADCS BOOT", (char *)"PAY1-1", (char *)"PAY1-2", (char *)"GRX-PPS"};
 const char *GpioPathArr[CFE_SRL_TOT_GPIO_NUM] = {(char *)"/dev/gpiochip0", (char *)"/dev/gpiochip0", (char *)"/dev/gpiochip2", (char *)"/dev/gpiochip2", (char *)"/dev/gpiochip2"};
 uint32 GpioLineArr[CFE_SRL_TOT_GPIO_NUM] = {28, 29, 3, 5, 4};
@@ -114,6 +124,17 @@ int32 CFE_SRL_EarlyInit(void) {
     CFE_ES_WriteToSysLog("%s: GPIO Initialized.", __func__);
 #endif
 
+#ifdef SOCAT_READY
+    Status = CFE_SRL_HandleInit(&RS422, "STX 422", "/dev/pts/3", SRL_DEVTYPE_RS422, CFE_SRL_RS422_MUTEX_IDX, 250000);
+    if (Status != CFE_SRL_OK) {
+        CFE_ES_WriteToSysLog("%s: RS422 Initialization failed! RC=%d\n", __func__, Status);
+        return -1; // Revise to `UART_INIT_ERR`
+    }
+    CFE_ES_WriteToSysLog("%s: RS422 Initialized. FD : %d | Name : %s | DevName : %s | MutexID : %u | Status : %u |", 
+        __func__, RS422->FD, ((CFE_SRL_Global_Handle_t *)RS422)->Name, ((CFE_SRL_Global_Handle_t *)RS422)->DevName, ((CFE_SRL_Global_Handle_t *)RS422)->MutexID, ((CFE_SRL_Global_Handle_t *)RS422)->Status);
+#endif
+
+#ifdef CSP_READY
     /**
      * CSP Init
      */
@@ -123,10 +144,24 @@ int32 CFE_SRL_EarlyInit(void) {
         return -1; // Revise to `CSP_INIT_ERR`
     }
     CFE_ES_WriteToSysLog("%s: CSP Initializaed.", __func__);
-    
+#endif
+
     return CFE_SRL_OK;
 }
 
+
+/**
+ * Private Get Handle function
+ */
+/*----------------------------------------------------------------
+ *
+ * Implemented per public API
+ * See description in header file for argument/return detail
+ *
+ *-----------------------------------------------------------------*/
+CFE_SRL_IO_Handle_t *CFE_SRL_GetHandle(CFE_SRL_Handle_Indexer_t Index) {
+    return HandleTable[Index];
+}
 
 
 /**

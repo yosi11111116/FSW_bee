@@ -9,7 +9,7 @@ CFE_SRL_Global_Handle_t GlobalHandle[CFE_SRL_GLOBAL_HANDLE_NUM] = {0};
 CFE_SRL_Open_Device_Handle_t DeviceTable[CFE_SRL_GLOBAL_HANDLE_NUM] = {0};
 // pthread_mutex_t GlobalHandleMutex;
 
-char *DeviceList[CFE_SRL_GNRL_DEVICE_NUM] = {(char *)"/dev/i2c-0\0", (char *)"/dev/i2c-1\0", (char *)"/dev/i2c-2\0", (char *)"/dev/ttyS0\0", (char *)"/dev/ttyS1\0", (char *)"can0\0"};
+char *DeviceList[CFE_SRL_GNRL_DEVICE_NUM] = {(char *)"/dev/pts/3\0", (char *)"/dev/i2c-1\0", (char *)"/dev/i2c-2\0", (char *)"/dev/ttyS0\0", (char *)"/dev/ttyS1\0", (char *)"can0\0"};
 
 int CFE_SRL_DeviceTableInit(void) {
     memset(DeviceTable, 0, sizeof(DeviceTable));

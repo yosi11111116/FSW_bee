@@ -24,7 +24,16 @@
 */
 #include "cfe_srl_module_all.h"
 
-
+/*----------------------------------------------------------------
+ *
+ * Serial Write API
+ * Implemented per public API
+ * See description in header file for argument/return detail
+ *
+ *-----------------------------------------------------------------*/
+CFE_SRL_IO_Handle_t *CFE_SRL_ApiGetHandle(CFE_SRL_Handle_Indexer_t Index) {
+    return CFE_SRL_GetHandle(Index);
+}
 /*----------------------------------------------------------------
  *
  * Serial Write API
@@ -151,9 +160,9 @@ int32 CFE_SRL_ApiTransactionCSP(uint8_t Node, uint8_t Port, void *TxData, int Tx
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-int32 CFE_SRL_ApiGetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param) {
+int32 CFE_SRL_ApiGetRparamCSP(uint8_t Type, uint8_t Node, uint8_t TableId, uint16_t Addr, void *Param) {
     return CFE_SRL_GetRparamCSP(Type, Node, TableId, Addr, Param);
 }
-int32 CFE_SRL_ApiSetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param) {
+int32 CFE_SRL_ApiSetRparamCSP(uint8_t Type, uint8_t Node, uint8_t TableId, uint16_t Addr, void *Param) {
     return CFE_SRL_SetRparamCSP(Type, Node, TableId, Addr, Param);
 }

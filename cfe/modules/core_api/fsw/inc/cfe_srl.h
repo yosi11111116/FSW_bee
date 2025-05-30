@@ -14,8 +14,13 @@
 #ifndef CFE_SRL_H
 #define CFE_SRL_H
 
-#include "cfe_srl_module_all.h"
+#include "cfe_srl_api_typedefs.h"
+#include "cfe_srl_mission_cfg.h"
 
+/// @brief Get IO Handle pointer. **Use this handle pointer to other API function**
+/// @param Index Index of Handle table (Refer enum `CFE_SRL_Handle_Indexer_t`)
+/// @return Pointer of `CFE_SRL_IO_Handle_t` object
+CFE_SRL_IO_Handle_t *CFE_SRL_ApiGetHandle(CFE_SRL_Handle_Indexer_t Index);
 
 /// @brief Write data to external device via various serial comm. protocol
 /// @param Handle A Pointer of SRL Handle. Distinguish character device file
@@ -69,7 +74,7 @@ int32 CFE_SRL_ApiTransactionCSP(uint8_t Node, uint8_t Port, void *TxData, int Tx
 /// @param Addr Parameter address in table
 /// @param Param Pointer of buffer
 /// @return Only `CFE_SRL_OK`(which is `0`) is success
-int32 CFE_SRL_ApiGetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param);
+int32 CFE_SRL_ApiGetRparamCSP(uint8_t Type, uint8_t Node, uint8_t TableId, uint16_t Addr, void *Param);
 
 /// @brief Set particluar type of parameter of CSP device
 /// @param Type Parameter type. Look up header `gs/param/rparam.h`
@@ -78,5 +83,5 @@ int32 CFE_SRL_ApiGetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table
 /// @param Addr Parameter address in table
 /// @param Param Pointer of buffer
 /// @return Only `CFE_SRL_OK`(which is `0`) is success
-int32 CFE_SRL_ApiSetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param);
+int32 CFE_SRL_ApiSetRparamCSP(uint8_t Type, uint8_t Node, uint8_t TableId, uint16_t Addr, void *Param);
 #endif /* CFE_SRL_H */
