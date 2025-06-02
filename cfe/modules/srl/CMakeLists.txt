@@ -7,8 +7,30 @@
 
 project (CFE_SRL C)
 
-# Unit Test stub flags
-set(ENABLE_UT 0)
+###################################################################
+# Unit Test stub flag
+# If true, the 'hardware open & R/W' function is substituted with a stub function
+# i.e. `FASLE` is real
+set(ENABLE_UT       FALSE)
+
+# Define interface names
+# If data interface is changed, revise lower script
+set (DATA_INTERFACES I2C0 I2C1 I2C2 UART RS422 CAN GPIO CSP SOCAT)
+
+# Each data interface readiness flags
+# If false, corresponding interface initialization will be skipped.
+set(I2C0_READY      FALSE)
+set(I2C1_READY      FALSE)
+set(I2C2_READY      FALSE)
+set(UART_READY      FALSE)
+set(RS422_READY     FALSE)
+set(CAN_READY       FALSE)
+set(GPIO_READY      FALSE)
+set(CSP_READY       FALSE)
+
+# Imaginary serial stream `socat` flag
+set(SOCAT_READY       TRUE)
+###################################################################
 
 # Serial Comm. source files
 if (ENABLE_UT)
@@ -88,3 +110,10 @@ else ()
     # link csp
     target_link_libraries(srl PRIVATE ${PROJECT_SOURCE_DIR}/../../../submodules/libgscsp/build/cpu1/lib/libcsp-client.a)
 endif()
+
+
+foreach(IFACE ${DATA_INTERFACES})
+    if(${IFACE}_READY)
+        target_compile_definitions(srl PRIVATE ${IFACE}_READY)
+    endif()
+endforeach()

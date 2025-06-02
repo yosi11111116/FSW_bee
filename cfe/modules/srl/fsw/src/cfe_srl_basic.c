@@ -57,16 +57,16 @@ ssize_t CFE_SRL_BasicPollRead(int FD, void *Data, size_t Size, uint32_t Timeout)
         return CFE_SRL_BasicRead(FD, Data, Size); // Read.
     }
     else if (Ret == 0) {
-        return CFE_SRL_TIMEOUT_ERR;
+        return CFE_SRL_TIMEOUT;
     }
     else {
-        return CFE_SRL_ERROR;
+        return CFE_SRL_ERR;
     }
 }
 
 
 CFE_SRL_DevType_t CFE_SRL_GetHandleDevType(CFE_SRL_IO_Handle_t *Handle) {
-    if (Handle == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     CFE_SRL_Global_Handle_t *Entry = (CFE_SRL_Global_Handle_t *)Handle;
     
@@ -78,13 +78,13 @@ bool CFE_SRL_QueryStatus(const CFE_SRL_Global_Handle_t *Entry, uint8_t Query) {
 }
 
 int CFE_SRL_SetHandleStatus(CFE_SRL_IO_Handle_t *Handle, uint8_t Label, bool Set) {
-    if (Handle == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
     CFE_SRL_Global_Handle_t *Entry = (CFE_SRL_Global_Handle_t *)Handle;
 
     if (Set == true) Entry->Status |= Label;
     else Entry->Status &= ~Label;
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 /*************************************************************
@@ -106,7 +106,7 @@ speed_t CFE_SRL_GetBaudFromInt(uint32_t BaudRate) {
         case 500000: return B500000;
 
         default:
-            return -1;
+            return CFE_SRL_INVALID_BAUD;
     }
 }
 
@@ -114,11 +114,11 @@ int CFE_SRL_GetTermiosAttr(CFE_SRL_IO_Handle_t *Handle, struct termios *Termios)
     int Status;
     CFE_SRL_DevType_t DevType;
 
-    if (Handle == NULL || Termios == NULL ) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL || Termios == NULL ) return CFE_SRL_BAD_ARGUMENT;
 
     DevType = CFE_SRL_GetHandleDevType(Handle);
     if (DevType != SRL_DEVTYPE_UART && DevType != SRL_DEVTYPE_RS422) {
-        return -1; // Revise to `TYPE_NOT_UART`
+        return CFE_SRL_INVALID_TYPE;
     }
 
     Status = CFE_SRL_QueryStatus((CFE_SRL_Global_Handle_t *)Handle, CFE_SRL_HANDLE_STATUS_FD_INIT);
@@ -127,21 +127,21 @@ int CFE_SRL_GetTermiosAttr(CFE_SRL_IO_Handle_t *Handle, struct termios *Termios)
     Status = tcgetattr(Handle->FD, Termios);
     if (Status < 0) {
         Handle->__errno = errno;
-        return -1; // Revise to `UART_GET_ATTR_ERR`
+        return CFE_SRL_UART_GET_ATTR_ERR;
     }
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 int CFE_SRL_SetTermiosAttr(CFE_SRL_IO_Handle_t *Handle, struct termios *Termios) {
     int Status;
     CFE_SRL_DevType_t DevType;
 
-    if (Handle == NULL || Termios == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL || Termios == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     DevType = CFE_SRL_GetHandleDevType(Handle);
     if (DevType != SRL_DEVTYPE_UART && DevType != SRL_DEVTYPE_RS422) {
-        return -1; // Revise to `TYPE_NOT_UART`
+        return CFE_SRL_INVALID_TYPE;
     }
 
     Status = CFE_SRL_QueryStatus((CFE_SRL_Global_Handle_t *)Handle, CFE_SRL_HANDLE_STATUS_FD_INIT);
@@ -150,10 +150,10 @@ int CFE_SRL_SetTermiosAttr(CFE_SRL_IO_Handle_t *Handle, struct termios *Termios)
     Status = tcsetattr(Handle->FD, TCSANOW, Termios);
     if (Status < 0) {
         Handle->__errno = errno;
-        return -1; // Revise to `UART_SET_ATTR_ERR`
+        return CFE_SRL_UART_SET_ATTR_ERR;
     }
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 int CFE_SRL_BasicSetUART(CFE_SRL_IO_Handle_t *Handle, uint32_t BaudRate) {
@@ -161,22 +161,22 @@ int CFE_SRL_BasicSetUART(CFE_SRL_IO_Handle_t *Handle, uint32_t BaudRate) {
     struct termios Termios;
     speed_t Baud;
 
-    if (Handle == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Baud = CFE_SRL_GetBaudFromInt(BaudRate);
-    if (Baud < 0) return -1; // Revise to `CFE_SRL_INVALID_BAUD`
+    if (Baud == CFE_SRL_INVALID_BAUD) return CFE_SRL_INVALID_BAUD; // Revise to `CFE_SRL_INVALID_BAUD`
 
     Status = CFE_SRL_GetTermiosAttr(Handle, &Termios);
-    if (Status != CFE_SRL_OK) return Status;
+    if (Status != CFE_SUCCESS) return Status;
 
     /**
      * Baud Rate Setting
      */
     Status = cfsetispeed(&Termios, Baud);
-    if (Status < 0) return -1; // Revise to `SET_ISPEED_ERR`
+    if (Status < 0) return CFE_SRL_UART_SET_ISPEED_ERR; // Revise to `SET_ISPEED_ERR`
 
     Status = cfsetospeed(&Termios, Baud);
-    if (Status < 0) return -1; // Revise to `SET_OSPEED_ERR`
+    if (Status < 0) return CFE_SRL_UART_SET_ISPEED_ERR; // Revise to `SET_OSPEED_ERR`
 
     /**
      * Flag setting
@@ -200,9 +200,9 @@ int CFE_SRL_BasicSetUART(CFE_SRL_IO_Handle_t *Handle, uint32_t BaudRate) {
     Termios.c_oflag &= ~(OPOST); // Post Process off
 
     Status = CFE_SRL_SetTermiosAttr(Handle, &Termios);
-    if (Status != CFE_SRL_OK) return Status;
+    if (Status != CFE_SUCCESS) return Status;
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 
@@ -212,45 +212,45 @@ int CFE_SRL_BasicSetUART(CFE_SRL_IO_Handle_t *Handle, uint32_t BaudRate) {
  * 
  *************************************************************/
 int32 CFE_SRL_BasicGpioOpen(CFE_SRL_GPIO_Handle_t *Handle, const char *Path) {
-    if (Handle == NULL || Path == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL || Path == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Handle->Chip = gpiod_chip_open(Path);
-    if (Handle->Chip == NULL) return -1; // Revise to `GPIO_OPEN_ERR`
+    if (Handle->Chip == NULL) return CFE_SRL_GPIO_CHIP_OPEN_ERR;
 
     
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 int32 CFE_SRL_BasicGpioGetLine(CFE_SRL_GPIO_Handle_t *Handle, unsigned int Line) {
-    if (Handle == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Handle->Line = gpiod_chip_get_line(Handle->Chip, Line);
-    if (Handle->Line == NULL) return -1; // Revise to `GPIO_GET_LINE_ERR`
+    if (Handle->Line == NULL) return CFE_SRL_GPIO_GET_LINE_ERR;
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 int32 CFE_SRL_BasicGpioSetOutput(CFE_SRL_GPIO_Handle_t *Handle, const char *Name, bool Default) {
     int32 Status;
 
-    if (Handle == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Status = gpiod_line_request_output(Handle->Line, Name, Default);
-    if (Status < 0) return -1; // Revise to `GPIO_SET_OUTPUT_ERR`
+    if (Status < 0) return CFE_SRL_GPIO_SET_OUTPUT_ERR;
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 int32 CFE_SRL_BasicGpioSetValue(CFE_SRL_GPIO_Handle_t *Handle, bool Value) {
     int32 Status;
 
-    if (Handle == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Status = gpiod_line_set_value(Handle->Line, Value ? 1 : 0);
-    if (Status < 0) return -1; // Revise to `GPIO_SET_VALUE_ERR`
+    if (Status < 0) return CFE_SRL_GPIO_SET_VALUE_ERR;
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 int32 CFE_SRL_BasicGpioClose(CFE_SRL_GPIO_Handle_t *Handle) {
@@ -258,5 +258,5 @@ int32 CFE_SRL_BasicGpioClose(CFE_SRL_GPIO_Handle_t *Handle) {
     gpiod_line_release(Handle->Line);
     gpiod_chip_close(Handle->Chip);
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }

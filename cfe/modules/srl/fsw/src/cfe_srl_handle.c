@@ -9,7 +9,7 @@ CFE_SRL_Global_Handle_t GlobalHandle[CFE_SRL_GLOBAL_HANDLE_NUM] = {0};
 CFE_SRL_Open_Device_Handle_t DeviceTable[CFE_SRL_GLOBAL_HANDLE_NUM] = {0};
 // pthread_mutex_t GlobalHandleMutex;
 
-#ifndef CFE_SRL_UT
+#ifndef SOCAT_READY
 char *DeviceList[CFE_SRL_GNRL_DEVICE_NUM] = {(char *)"/dev/i2c-0\0", (char *)"/dev/i2c-1\0", (char *)"/dev/i2c-2\0", (char *)"/dev/ttyS0\0", (char *)"/dev/ttyS1\0", (char *)"can0\0"};
 #else
 char *DeviceList[CFE_SRL_GNRL_DEVICE_NUM] = {(char *)"/dev/pts/3\0", (char *)"/dev/i2c-1\0", (char *)"/dev/i2c-2\0", (char *)"/dev/ttyS0\0", (char *)"/dev/ttyS1\0", (char *)"can0\0"};
@@ -22,18 +22,18 @@ int CFE_SRL_DeviceTableInit(void) {
     }
     CFE_ES_WriteToSysLog("%s: DeviceTable Initialized. 1: %s 2: %s 3: %s 4: %s 5: %s 6: %s.",
         __func__, DeviceTable[0].DevName, DeviceTable[1].DevName, DeviceTable[2].DevName, DeviceTable[3].DevName, DeviceTable[4].DevName, DeviceTable[5].DevName);
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 int CFE_SRL_PriorInit(void) {
     int Status;
     CFE_SRL_DeviceTableInit();
     Status = CFE_SRL_GlobalHandleMutexInit();
-    if (Status != CFE_SRL_OK) {
-        return CFE_SRL_PRIOR_INIT_ERR; // Revise to `PRIOR_INIT_ERROR`
+    if (Status != CFE_SUCCESS) {
+        return CFE_SRL_PRIOR_INIT_ERR;
     }
 
-    return CFE_SRL_OK; // Revise to `OK`
+    return CFE_SUCCESS;
 }
 
 int CFE_SRL_AddSubRefCount(const char *DevName, bool Add) {
@@ -41,15 +41,15 @@ int CFE_SRL_AddSubRefCount(const char *DevName, bool Add) {
         if (strcmp(DeviceTable[i].DevName, DevName) == 0) {
             if (Add) { // `true` for add
                 DeviceTable[i].RefCount++;
-                return CFE_SRL_OK;
+                return CFE_SUCCESS;
             }
             else { // `false` for sub
                 DeviceTable[i].RefCount--;
-                return CFE_SRL_OK;
+                return CFE_SUCCESS;
             }
         }
     }
-    return CFE_SRL_NOT_FOUND; // Revise to `NOT_FOUND`
+    return CFE_SRL_NOT_FOUND;
 }
 
 int CFE_SRL_GetOpenOption(CFE_SRL_DevType_t Devtype) {
@@ -64,7 +64,7 @@ int CFE_SRL_GetOpenOption(CFE_SRL_DevType_t Devtype) {
         default:
             break;
     }
-    return -1;
+    return CFE_SRL_TYPE_UNSUPPORTED;
 }
 
 int CFE_SRL_DevOpenCheck(const char *DevName) {
@@ -73,19 +73,19 @@ int CFE_SRL_DevOpenCheck(const char *DevName) {
             if (DeviceTable[i].FD > 0) {
                 return DeviceTable[i].FD;
             }
-            else return CFE_SRL_NOT_OPENED; // revise to `NOT_OPENED`
+            else return CFE_SRL_NOT_OPEN_ERR;
         }
     }
-    return CFE_SRL_NOT_FOUND; // revise to `NOT_FOUND_ERROR`
+    return CFE_SRL_NOT_FOUND;
 }
 
 int CFE_SRL_DevCloseCheck(const char *DevName) {
     for (uint8_t i = 0; i < CFE_SRL_DEVICE_TABLE_NUM; i++) {
         if (strcmp(DeviceTable[i].DevName, DevName) == 0) {
             if (DeviceTable[i].RefCount == 1) {
-                return CFE_SRL_OK;
+                return CFE_SUCCESS;
             }
-            else return CFE_SRL_REF_REMAIN;
+            else return CFE_SRL_REF_COUNT_REMAIN;
         }
     }
     return CFE_SRL_NOT_FOUND;
@@ -97,10 +97,10 @@ int CFE_SRL_DevOpenInsert(const char *DevName, int FD) {
             DeviceTable[i].FD = FD;
             DeviceTable[i].RefCount ++;
             CFE_ES_WriteToSysLog("%s: Device %s is opened in FD %d, RefCnt %d.", __func__, DeviceTable[i].DevName, DeviceTable[i].FD, DeviceTable[i].RefCount);
-            return CFE_SRL_OK; // Revise to `OK`
+            return CFE_SUCCESS; // Revise to `OK`
         }
     }
-    return CFE_SRL_DEV_NOT_FOUND; // Revise to `DEV_NOT_FOUND`
+    return CFE_SRL_NOT_FOUND_ERR; // Revise to `DEV_NOT_FOUND`
 }
 
 int CFE_SRL_DevCloseRemove(const char *DevName) {
@@ -109,17 +109,17 @@ int CFE_SRL_DevCloseRemove(const char *DevName) {
             DeviceTable[i].FD = -1;
             DeviceTable[i].RefCount = 0;
             CFE_ES_WriteToSysLog("%s: Device %s is closed.", __func__, DevName);
-            return CFE_SRL_OK;
+            return CFE_SUCCESS;
         }
     }
-    return CFE_SRL_DEV_NOT_FOUND;
+    return CFE_SRL_NOT_FOUND_ERR;
 }
 
 int CFE_SRL_GetHandleByName(const char *Name, CFE_SRL_IO_Handle_t **Handle) {
     CFE_SRL_Global_Handle_t *Entry;
 
     if (!Name) {
-        return CFE_SRL_NAME_PTR_NULL_ERR; // revise to `NAME_PTR_NULL_ERROR`
+        return CFE_SRL_BAD_ARGUMENT; // revise to `NAME_PTR_NULL_ERROR`
     }
     size_t NameLength = strlen(Name);
     if (NameLength > CFE_SRL_HANDLE_NAME_LENGTH) {
@@ -136,7 +136,7 @@ int CFE_SRL_GetHandleByName(const char *Name, CFE_SRL_IO_Handle_t **Handle) {
             *Handle = &Entry->Handle;
             // Mutex Unlock
             CFE_SRL_GlobalHandleMutexUnlock();
-            return CFE_SRL_OK; // Revise to `OK` == `Found`
+            return CFE_SUCCESS; // Revise to `OK` == `Found`
         }
     }
     // Mutex Unlock
@@ -151,10 +151,10 @@ int CFE_SRL_GlobalHandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, con
     int Status;
 
     Status = CFE_SRL_GetHandleByName(Name, &TempHandle);
-    if (Status == CFE_SRL_NAME_PTR_NULL_ERR || 
+    if (Status == CFE_SRL_BAD_ARGUMENT || 
         Status == CFE_SRL_NAME_LEN_OVERFLOW_ERR) return Status;
 
-    if (Status == CFE_SRL_OK) { // Revise to `OK`
+    if (Status == CFE_SUCCESS) { // Revise to `OK`
         return CFE_SRL_ALREADY_EXIST; // Revise to `ALREADY_EXIST`
     }
     
@@ -180,17 +180,17 @@ int CFE_SRL_GlobalHandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, con
 
             //Mutex Unlock
             CFE_SRL_GlobalHandleMutexUnlock();
-            return CFE_SRL_OK; // Revise to `OK`
+            return CFE_SUCCESS;
         }
     }
     //Mutex Unlock
     CFE_SRL_GlobalHandleMutexUnlock();
-    return CFE_SRL_FULL_ERR; // Revise to `FULL_ERROR`
+    return CFE_SRL_FULL_ERR;
 }
 
 
 
-int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const char *Devname, uint8_t DevType, uint8_t MutexID) {
+int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const char *Devname, uint8_t DevType, uint8_t MutexID, uint32_t BaudRate) {
     int Status;
     CFE_SRL_IO_Handle_t *TempHandle;
     int OpenOption;
@@ -200,10 +200,11 @@ int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const cha
 
     // Get Open Option
     OpenOption = CFE_SRL_GetOpenOption(DevType);
+    if (OpenOption == CFE_SRL_TYPE_UNSUPPORTED) return CFE_SRL_HANDLE_INIT_ERR;
 
     // GlobalHandle Init
     Status = CFE_SRL_GlobalHandleInit(&TempHandle, Name, Devname, DevType);
-    if (Status != CFE_SRL_OK) return Status;     // Revise `1` to `OK`
+    if (Status != CFE_SUCCESS) return Status;     // Revise `1` to `OK`
 
     // Open
     int FD = CFE_SRL_DevOpenCheck(Devname);
@@ -214,30 +215,30 @@ int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const cha
     else { // If not opened,
         if (DevType == SRL_DEVTYPE_CAN) {
             Status = CFE_SRL_OpenSocket(TempHandle, Devname); // Do socket()
-            if (Status != CFE_SRL_OK) return Status;
+            if (Status != CFE_SUCCESS) return Status;
         }
         else {
             Status = CFE_SRL_Open(TempHandle, Devname, OpenOption); // Do open()
-            if (Status != CFE_SRL_OK) return Status;
+            if (Status != CFE_SUCCESS) return Status;
         }
 
         Status = CFE_SRL_DevOpenInsert(Devname, TempHandle->FD); // Add to `DeviceTable`
-        if (Status != CFE_SRL_OK) return Status;
+        if (Status != CFE_SUCCESS) return Status;
     }
     
     // IO Handle Mutex Init
     Status = CFE_SRL_HandleMutexInit(TempHandle, MutexID);
-    if (Status != CFE_SRL_OK) return Status;     // Revise `1` to `OK`
+    if (Status != CFE_SUCCESS) return Status;     // Revise `1` to `OK`
 
     // Allocate the result Handle
     *Handle = TempHandle;
     
     if (DevType == SRL_DEVTYPE_UART || DevType == SRL_DEVTYPE_RS422) {
-        Status = CFE_SRL_BasicSetUART(*Handle, 115200);
+        Status = CFE_SRL_BasicSetUART(*Handle, BaudRate);
 
-        if (Status != CFE_SRL_OK) return CFE_SRL_UART_INIT_ERR;
+        if (Status != CFE_SUCCESS) return CFE_SRL_UART_SET_ERR;
     }
-    return CFE_SRL_OK; // Revise to `OK`
+    return CFE_SUCCESS; // Revise to `OK`
 }
 
 
@@ -245,23 +246,23 @@ int CFE_SRL_HandleClose(CFE_SRL_IO_Handle_t *Handle) {
     int Status;
     CFE_SRL_Global_Handle_t *Entry;
 
-    if (Handle == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Entry = (CFE_SRL_Global_Handle_t *)Handle;
 
     Status = CFE_SRL_DevCloseCheck(Entry->DevName);
-    if (Status == CFE_SRL_OK) {
+    if (Status == CFE_SUCCESS) {
         Status = CFE_SRL_Close(Handle);
-        if (Status != CFE_SRL_OK) return Status;
+        if (Status != CFE_SUCCESS) return Status;
 
         Status = CFE_SRL_DevCloseRemove(Entry->DevName);
-        if (Status != CFE_SRL_OK) return Status;
-        else return CFE_SRL_OK;
+        if (Status != CFE_SUCCESS) return Status;
+        else return CFE_SUCCESS;
     }
-    else if (Status == CFE_SRL_REF_REMAIN) {
+    else if (Status == CFE_SRL_REF_COUNT_REMAIN) {
         Status = CFE_SRL_AddSubRefCount(Entry->DevName, false);
-        if (Status != CFE_SRL_OK) return Status;
-        return CFE_SRL_OK;
+        if (Status != CFE_SUCCESS) return Status;
+        return CFE_SUCCESS;
     }
     else return Status;
 }

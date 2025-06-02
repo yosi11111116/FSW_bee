@@ -32,7 +32,7 @@ int CFE_SRL_DevOpenInsert(const char *DevName, int FD);
 int CFE_SRL_DevCloseRemove(const char *DevName);
 int CFE_SRL_GetHandleByName(const char *Name, CFE_SRL_IO_Handle_t **Handle);
 int CFE_SRL_GlobalHandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const char *DevName, uint8_t DevType);
-int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const char *Devname, uint8_t DevType, uint8_t MutexID);
+int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const char *Devname, uint8_t DevType, uint8_t MutexID, uint32_t BaudRate);
 int CFE_SRL_HandleClose(CFE_SRL_IO_Handle_t *Handle);
 
 #endif /* CFE_SRL_HANDLE_H */

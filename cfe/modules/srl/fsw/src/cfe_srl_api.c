@@ -41,11 +41,11 @@ CFE_SRL_IO_Handle_t *CFE_SRL_ApiGetHandle(CFE_SRL_Handle_Indexer_t Index) {
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, void *Data, size_t Size, uint32_t Addr) {
+int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Size, uint32_t Addr) {
     int32 Status;
     CFE_SRL_DevType_t DevType;
 
-    if (Handle == NULL || Data == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL || Data == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     DevType = CFE_SRL_GetHandleDevType(Handle);
 
@@ -61,7 +61,7 @@ int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, void *Data, size_t Size, uin
             Status = CFE_SRL_WriteCAN(Handle, Data, Size, Addr);
             break;
         default:
-            Status = -1; // Revise to `INVALID_DEV_TYPE_ERR`
+            Status = CFE_SRL_TYPE_UNSUPPORTED;
             break;
     }
 
@@ -76,11 +76,11 @@ int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, void *Data, size_t Size, uin
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, void *TxData, size_t TxSize, void *RxData, size_t RxSize, uint32_t Timeout, uint32_t Addr) {
+int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t TxSize, void *RxData, size_t RxSize, uint32_t Timeout, uint32_t Addr) {
     int32 Status;
     CFE_SRL_DevType_t DevType;
 
-    if (Handle == NULL || TxData == NULL || RxData == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL || TxData == NULL || RxData == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     DevType = CFE_SRL_GetHandleDevType(Handle);
 
@@ -96,7 +96,7 @@ int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, void *TxData, size_t TxSize, 
             Status = CFE_SRL_ReadCAN(Handle, TxData, TxSize, RxData, RxSize, Timeout, Addr);
             break;
         default:
-            Status = -1; // Revise to `INVALID_DEV_TYPE_ERR`
+            Status = CFE_SRL_TYPE_UNSUPPORTED;
             break;
     }
     return Status;
@@ -113,12 +113,12 @@ int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, void *TxData, size_t TxSize, 
 int32 CFE_SRL_ApiClose(CFE_SRL_IO_Handle_t *Handle) {
     int32 Status;
 
-    if (Handle == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Status = CFE_SRL_HandleClose(Handle);
-    if (Status != CFE_SRL_OK) return Status;
+    if (Status != CFE_SUCCESS) return Status;
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 
@@ -130,7 +130,7 @@ int32 CFE_SRL_ApiClose(CFE_SRL_IO_Handle_t *Handle) {
  *
  *-----------------------------------------------------------------*/
 int32 CFE_SRL_ApiGpioSet(CFE_SRL_GPIO_Handle_t *Handle, bool Value) {
-    if (Handle == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
     
     return CFE_SRL_BasicGpioSetValue(Handle, Value);
 }
@@ -145,12 +145,12 @@ int32 CFE_SRL_ApiGpioSet(CFE_SRL_GPIO_Handle_t *Handle, bool Value) {
 int32 CFE_SRL_ApiTransactionCSP(uint8_t Node, uint8_t Port, void *TxData, int TxSize, void *RxData, int RxSize) {
     int32 Status;
 
-    if (TxData == NULL || RxData == NULL) return CFE_SRL_NULL_ERR;
+    if (TxData == NULL || RxData == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Status = CFE_SRL_TransactionCSP(Node, Port, TxData, TxSize, RxData, RxSize);
-    if (Status == -1) return Status; // Revise -1 to `CSP_TRANSACTION_ERR`
+    if (Status == CFE_SRL_TRANSACTION_ERR) return Status;
 
-    return Status;
+    return Status; // 1 or reply size
 }
 
 /*----------------------------------------------------------------
@@ -166,16 +166,3 @@ int32 CFE_SRL_ApiGetRparamCSP(uint8_t Type, uint8_t Node, uint8_t TableId, uint1
 int32 CFE_SRL_ApiSetRparamCSP(uint8_t Type, uint8_t Node, uint8_t TableId, uint16_t Addr, void *Param) {
     return CFE_SRL_SetRparamCSP(Type, Node, TableId, Addr, Param);
 }
-
-
-/**
- * CSP RF API
- * Wrapping several CSP API for app layer module
- * 
- * Lists
- * 1. csp_socket
- * 2. csp_bind
- * 3. csp_listen
- * 4. csp_read
- * 5. 
- */
