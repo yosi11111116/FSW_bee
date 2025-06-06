@@ -167,7 +167,7 @@ char *CFE_ES_StatusToString(CFE_Status_t status, CFE_StatusString_t *status_stri
 
 /**
  * User API macro for Status code generation  
- */        
+ */
 #define CFE_SERIAL_INFORMATION(n)   CFE_STATUS_C(CFE_USER_MODULE_CODE(0b01, CFE_MISSION_ID_SERIAL, (n)))
 #define CFE_SERIAL_ERROR(n)         CFE_STATUS_C(CFE_USER_MODULE_CODE(0b11, CFE_MISSION_ID_SERIAL, (n)))
 #define CFE_RADIO_INFORMATION(n)    CFE_STATUS_C(CFE_USER_MODULE_CODE(0b01, CFE_MISSION_ID_RADIO, (n)))
@@ -1476,6 +1476,7 @@ char *CFE_ES_StatusToString(CFE_Status_t status, CFE_StatusString_t *status_stri
 #define CFE_SRL_MUTEX_LOCK_ERR          CFE_SERIAL_ERROR(72)
 #define CFE_SRL_MUTEX_UNLOCK_ERR        CFE_SERIAL_ERROR(73)
 #define CFE_SRL_MUTEX_SET_PROTOCOL_ERR  CFE_SERIAL_ERROR(74)
+#define CFE_SRL_MUTEX_DESTROY_ERR       CFE_SERIAL_ERROR(75)
 
 #define CFE_SRL_I2C0_INIT_ERR           CFE_SERIAL_ERROR(80)
 #define CFE_SRL_I2C1_INIT_ERR           CFE_SERIAL_ERROR(81)

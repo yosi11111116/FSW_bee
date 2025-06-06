@@ -61,12 +61,6 @@ typedef struct {
     uint8_t Status;
 } CFE_SRL_Global_Handle_t;
 
-typedef struct {
-    char DevName[CFE_SRL_HANDLE_NAME_LENGTH];
-    int FD;
-    int RefCount;
-} CFE_SRL_Open_Device_Handle_t;
-
 typedef enum {
     CFE_SRL_HANDLE_STATUS_NONE = 0x00,
     CFE_SRL_HANDLE_STATUS_ALLOCATE = 0x01,
@@ -95,7 +89,7 @@ ssize_t CFE_SRL_BasicPollRead(int FD, void *Data, size_t Size, uint32_t Timeout)
 
 CFE_SRL_DevType_t CFE_SRL_GetHandleDevType(CFE_SRL_IO_Handle_t *Handle);
 
-bool CFE_SRL_QueryStatus(const CFE_SRL_Global_Handle_t *Entry, uint8_t Query);
+bool CFE_SRL_QueryStatus(const CFE_SRL_Global_Handle_t *Entry, CFE_SRL_Handle_Status_t Query);
 
 int CFE_SRL_SetHandleStatus(CFE_SRL_IO_Handle_t *Handle, uint8_t Label, bool Set);
 

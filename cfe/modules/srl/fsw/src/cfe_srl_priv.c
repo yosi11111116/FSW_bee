@@ -120,9 +120,10 @@ int32 CFE_SRL_EarlyInit(void) {
 #endif
 
 #ifdef SOCAT_READY
-    Status = CFE_SRL_HandleInit(&RS422, "STX 422", "/dev/pts/3", SRL_DEVTYPE_RS422, CFE_SRL_RS422_MUTEX_IDX, 250000);
+    Status = CFE_SRL_HandleInit(&RS422, "STX 422", SOCAT_DEV, SRL_DEVTYPE_RS422, CFE_SRL_RS422_MUTEX_IDX, 250000);
     if (Status != CFE_SUCCESS) {
-        CFE_ES_WriteToSysLog("%s: RS422 Initialization failed! RC=%d\n", __func__, Status);
+        CFE_StatusString_t String;
+        CFE_ES_WriteToSysLog("%s: RS422 Initialization failed! RC=%d %s\n", __func__, Status, CFE_ES_StatusToString(Status, &String));
         return CFE_SRL_SOCAT_INIT_ERR;
     }
     CFE_ES_WriteToSysLog("%s: RS422 Initialized. FD : %d | Name : %s | DevName : %s | MutexID : %u | Status : %u |", 

@@ -32,4 +32,6 @@ int CFE_SRL_HandleMutexInit(CFE_SRL_IO_Handle_t *Handle, uint8_t MutexID);
 
 int CFE_SRL_MutexLock(CFE_SRL_IO_Handle_t *Handle);
 int CFE_SRL_MutexUnlock(CFE_SRL_IO_Handle_t *Handle);
+int CFE_SRL_MutexDestroy(CFE_SRL_IO_Handle_t *Handle);
+
 #endif /* CFE_SRL_MUTEX_H */

@@ -73,7 +73,7 @@ CFE_SRL_DevType_t CFE_SRL_GetHandleDevType(CFE_SRL_IO_Handle_t *Handle) {
     return Entry->DevType;
 }
 
-bool CFE_SRL_QueryStatus(const CFE_SRL_Global_Handle_t *Entry, uint8_t Query) {
+bool CFE_SRL_QueryStatus(const CFE_SRL_Global_Handle_t *Entry, CFE_SRL_Handle_Status_t Query) {
     return (Entry->Status & Query) == Query;
 }
 

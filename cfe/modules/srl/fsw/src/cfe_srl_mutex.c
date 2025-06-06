@@ -122,3 +122,22 @@ int CFE_SRL_MutexUnlock(CFE_SRL_IO_Handle_t *Handle) {
 
     return CFE_SUCCESS;
 }
+
+int CFE_SRL_MutexDestroy(CFE_SRL_IO_Handle_t *Handle) {
+    int Status;
+
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
+
+    const CFE_SRL_Global_Handle_t *Entry = (CFE_SRL_Global_Handle_t *)Handle;
+
+    if (IOMutex[Entry->MutexID].Isinit == false) return CFE_SUCCESS;
+    else {
+        Status = pthread_mutex_destroy(&IOMutex[Entry->MutexID].Mutex);
+        if (Status < 0) {
+            Handle->__errno = errno;
+            return CFE_SRL_MUTEX_INIT_ERR;
+        }
+        IOMutex[Entry->MutexID].Isinit = false;
+        return CFE_SUCCESS;
+    }
+}
