@@ -6,7 +6,7 @@
 ##################################################################
 
 project (CFE_SRL C)
-
+message(STATUS "srl cmake start")
 include(${CMAKE_CURRENT_LIST_DIR}/interface_config.cmake)
 
 # Serial Comm. source files
@@ -19,6 +19,7 @@ if (ENABLE_UT)
         fsw/src/cfe_srl_priv.c
         fsw/src/cfe_srl_csp.c
         fsw/src/cfe_srl_api.c
+        fsw/src/cfe_srl_init.c
     )
 else()
     set(srl_SOURCES
@@ -29,6 +30,7 @@ else()
     fsw/src/cfe_srl_priv.c
     fsw/src/cfe_srl_csp.c
     fsw/src/cfe_srl_api.c
+    fsw/src/cfe_srl_init.c
     )   
 endif()
 
@@ -99,3 +101,4 @@ foreach(IFACE ${DATA_INTERFACES})
         endif()
     endif()
 endforeach()
+message(STATUS "srl cmake end")

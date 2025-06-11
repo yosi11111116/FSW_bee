@@ -1,16 +1,21 @@
+/* Auto-Generated file */
 #ifndef CFE_SRL_MISSION_CFG_H
 #define CFE_SRL_MISSION_CFG_H
 
 #include "cfe_srl_interface_cfg.h"
 
 typedef enum {
-    CFE_SRL_I2C0_HANDLE_INDEXER = 0,
-    CFE_SRL_I2C1_HANDLE_INDEXER,
-    CFE_SRL_I2C2_HANDLE_INDEXER,
-    CFE_SRL_UART_HANDLE_INDEXER,
-    CFE_SRL_RS422_HANDLE_INDEXER,
-    CFE_SRL_CAN0_HANDLE_INDEXER
+	CFE_SRL_SOCAT_HANDLE_INDEXER,
 } CFE_SRL_Handle_Indexer_t;
 
-#define CFE_SRL_GNRL_DEVICE_NUM     (CFE_SRL_CAN0_HANDLE_INDEXER + 1)
+/* \# of General serial device */
+#define CFE_SRL_GNRL_DEVICE_NUM		(CFE_SRL_SOCAT_HANDLE_INDEXER + 1)
+
+/* \# of used gpio pin */
+#define CFE_SRL_TOT_GPIO_NUM		1
+
+typedef enum {
+	CFE_SRL_ADCS_EN_GPIO_INDEXER,
+} CFE_SRL_GPIO_Indexer_t;
+
 #endif /* CFE_SRL_MISSION_CFG_H */

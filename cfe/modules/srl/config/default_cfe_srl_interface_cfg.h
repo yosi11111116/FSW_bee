@@ -9,7 +9,4 @@
 /* Max Handle name length */
 #define CFE_SRL_HANDLE_NAME_LENGTH  16
 
-/* \# of used gpio pin */
-#define CFE_SRL_TOT_GPIO_NUM        5
-
 #endif /* CFE_SRL_INTERFACE_CFG_H */
