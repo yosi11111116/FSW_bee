@@ -25,24 +25,6 @@
 #include "cfe_srl_api_typedefs.h"
 #include "cfe_srl_mission_cfg.h"
 
-// #define CFE_SRL_GLOBAL_HANDLE_NUM   20
-// #define CFE_SRL_DEVICE_TABLE_NUM    20
-
-// #define CFE_SRL_GNRL_DEVICE_NUM     6
-
-// #define CFE_SRL_HANDLE_NAME_LENGTH  16
-
-// #define CFE_SRL_TOT_GPIO_NUM        5
-
-// typedef struct {
-//     int FD;
-//     int __errno;
-//     uint32_t TxCount;
-//     uint32_t RxCount;
-//     uint32_t TxErrCnt;
-//     uint32_t RxErrCnt;
-// } CFE_SRL_IO_Handle_t;
-
 typedef enum {
     SRL_DEVTYPE_I2C = 1,
     SRL_DEVTYPE_SPI,
@@ -69,11 +51,6 @@ typedef enum {
     CFE_SRL_HANDLE_STATUS_ALL = 0x07
 } CFE_SRL_Handle_Status_t;
 
-
-// typedef struct {
-//     struct gpiod_chip *Chip;
-//     struct gpiod_line *Line;
-// } CFE_SRL_GPIO_Handle_t;
 
 int CFE_SRL_BasicOpen(const char *Device, int Option);
 

@@ -5,8 +5,6 @@
 #define CFE_SRL_STUB
 #undef CFE_SRL_STUB
 
-#define CFE_SRL_UT
-
 #include <stdint.h>
 
 #ifdef CFE_SRL_STUB

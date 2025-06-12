@@ -7,7 +7,8 @@
     - `default_cfe_srl_mission_cfg.h` in `/cfe/modules/srl/config/`
     - `cfe_srl_init.c` in `/cfe/modules/srl/fsw/src/`
 - This tool read `Interface_config.json` which determine the serial interfaces configuration
-
+    - `Interface_config.json` is in `cfe/modules/srl/`
+    
 # How to use
 - End user just revise `Interface_config.json` only
 - After reivision, manually execute `generator.py` in `tools/serial-configtool/`

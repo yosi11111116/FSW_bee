@@ -52,7 +52,8 @@
         "cfe_sb.h": "c",
         "osconfig.h": "c",
         "gpiod.h": "c",
-        "cfe_evs_mission_cfg.h": "c"
+        "cfe_evs_mission_cfg.h": "c",
+        "unistd.h": "c"
     },
     "cmake.sourceDirectory": "/home/hj/Documents/FSW/tools/elf2cfetbl"
 }

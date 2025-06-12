@@ -5,6 +5,8 @@
 - Unlink several cFS submodule (e.g. cfe, ci_lab, sch_lab)
 > That means these modules managed as same repository
 - Add some submodules. **CSP**, **toolchain**, **libgpiod**
+- Add serial configuration tool at `tools/serial-configtool`
+  - Read `README.md` in that directory
 
 # Build & Run
 ## Prerequisite
