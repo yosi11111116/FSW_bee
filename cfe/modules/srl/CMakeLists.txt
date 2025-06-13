@@ -7,7 +7,6 @@
 
 project (CFE_SRL C)
 message(STATUS "srl cmake start")
-include(${CMAKE_CURRENT_LIST_DIR}/interface_config.cmake)
 
 # Serial Comm. source files
 if (ENABLE_UT)
@@ -90,15 +89,4 @@ else ()
     target_link_libraries(srl PRIVATE ${PROJECT_SOURCE_DIR}/../../../submodules/libgscsp/build/cpu1/lib/libcsp-client.a)
 endif()
 
-
-foreach(IFACE ${DATA_INTERFACES})
-    if(${IFACE}_READY)
-        target_compile_definitions(srl PRIVATE ${IFACE}_READY)
-        string(CONCAT dev_var_name "${IFACE}_DEV")
-        if (DEFINED ${dev_var_name})
-            set(dev_value "${${dev_var_name}}")
-            target_compile_definitions(srl PRIVATE ${IFACE}_DEV=\"${dev_value}\")
-        endif()
-    endif()
-endforeach()
 message(STATUS "srl cmake end")
