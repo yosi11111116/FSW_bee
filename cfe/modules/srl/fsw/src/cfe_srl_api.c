@@ -54,6 +54,9 @@ int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Siz
         case SRL_DEVTYPE_I2C:
             Status = CFE_SRL_WriteI2C(Handle, Data, Size, (uint8_t)Addr);
             break;
+        case SRL_DEVTYPE_SPI:
+            Status = CFE_SRL_WriteSPI(Handle, Data, Size);
+            break;
         case SRL_DEVTYPE_UART:
         case SRL_DEVTYPE_RS422:
             Status = CFE_SRL_WriteUART(Handle, Data, Size);
@@ -88,6 +91,9 @@ int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t Tx
     switch(DevType) {
         case SRL_DEVTYPE_I2C:
             Status = CFE_SRL_ReadI2C(Handle, TxData, TxSize, RxData, RxSize, Addr);
+            break;
+        case SRL_DEVTYPE_SPI:
+            Status = CFE_SRL_ReadSPI(Handle, TxData, TxSize, RxData, RxSize);
             break;
         case SRL_DEVTYPE_UART:
         case SRL_DEVTYPE_RS422:

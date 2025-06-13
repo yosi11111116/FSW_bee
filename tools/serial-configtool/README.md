@@ -6,6 +6,7 @@
 - This tool automatically generated some source code
     - `default_cfe_srl_mission_cfg.h` in `/cfe/modules/srl/config/`
     - `cfe_srl_init.c` in `/cfe/modules/srl/fsw/src/`
+    - `cfe_srl_error.h` in `cfe/modules/core_api/fsw/inc`
 - This tool read `Interface_config.json` which determine the serial interfaces configuration
     - `Interface_config.json` is in `cfe/modules/srl/`
     
