@@ -74,7 +74,7 @@ int CFE_SRL_GlobalHandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, con
 
 
 
-int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const char *Devname, uint8_t DevType, uint8_t MutexID, uint32_t BaudRate) {
+int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const char *Devname, uint8_t DevType, uint8_t MutexID, uint32_t BaudRate, uint8_t SPIMode) {
     int Status;
     CFE_SRL_IO_Handle_t *TempHandle;
     int OpenOption;
@@ -120,6 +120,10 @@ int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const cha
         Status = CFE_SRL_BasicSetUART(*Handle, BaudRate);
 
         if (Status != CFE_SUCCESS) return CFE_SRL_UART_SET_ERR;
+    }
+
+    if (DevType == SRL_DEVTYPE_SPI) {
+        Status = CFE_SRL_SetSPI(*Handle, SPIMode, BaudRate, 8);
     }
     return CFE_SUCCESS;
 }

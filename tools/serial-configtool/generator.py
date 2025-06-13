@@ -33,7 +33,22 @@ with open('../../cfe/modules/srl/config/default_cfe_srl_mission_cfg.h', 'w') as 
     f.write("#endif /* CFE_SRL_MISSION_CFG_H */")
 
 
-
+# Generate cfe_srl_error.h
+with open('../../cfe/modules/core_api/fsw/inc/cfe_srl_error.h', 'w') as f:
+    offset = 90
+    f.write("/* Auto-Generated file. Never change this code! */\n")
+    f.write("#ifndef CFE_SRL_ERROR_H\n")
+    f.write("#define CFE_SRL_ERROR_H\n\n")
+    f.write('#include "cfe_usr_error_macro.h"\n\n')
+    f.write("/**\n")
+    f.write(" * Early Init error define\n")
+    f.write(" */\n")
+    for iface in interfaces:
+        if iface['ready']:
+            f.write(f"#define CFE_SRL_{iface['name'].upper()}_INIT_ERR\t\tCFE_SERIAL_ERROR({offset})\n")
+            offset+=1
+    f.write("\n\n")
+    f.write("#endif /* CFE_SRL_ERROR_H */")
 
 # Generate EarlyInit function
 with open('../../cfe/modules/srl/fsw/src/cfe_srl_init.c', 'w') as f:

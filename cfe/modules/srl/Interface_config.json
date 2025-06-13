@@ -51,6 +51,15 @@
             "ready": true,
             "name": "socat",
             "DevName": "/dev/pts/4"
+        },
+        {
+            "type": "spi",
+            "ready": true,
+            "name": "SPIO",
+            "DevName": "/dev/spidev0.0",
+            "mode": 0,
+            "speed": 8000000,
+            "bitperword": 8
         }
     ]
 }

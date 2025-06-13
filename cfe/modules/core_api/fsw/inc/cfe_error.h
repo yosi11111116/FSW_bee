@@ -37,6 +37,7 @@
 /* Include Files */
 #include "osapi.h"
 
+#include "cfe_srl_error.h"
 /**
  * \brief cFE Status type for readability and eventually type safety
  */
@@ -130,48 +131,6 @@ char *CFE_ES_StatusToString(CFE_Status_t status, CFE_StatusString_t *status_stri
 #define CFE_SOFTWARE_BUS_SERVICE ((CFE_Status_t)0x0a000000) /**< @brief Software Bus Service */
 #define CFE_TABLE_SERVICE        ((CFE_Status_t)0x0c000000) /**< @brief Table Service */
 #define CFE_TIME_SERVICE         ((CFE_Status_t)0x0e000000) /**< @brief Time Service */
-
-/**
- * User Moule Identifiers
- * Srv bit should be `000`
- * Revise Mission defined code
- * `srl` = `0b000000001`
- * `rf` = `0b000000010`
- */
-#define CFE_CODE_BITS        16
-#define CFE_MISSION_BITS     9
-#define CFE_SERVICE_BITS     3
-#define CFE_RESERVE_BITS     2
-#define CFE_SEVERITY_BITS    2
-
-#define CFE_MISSION_SHIFT   CFE_CODE_BITS
-#define CFE_SERVICE_SHIFT   (CFE_MISSION_SHIFT + CFE_MISSION_BITS)
-#define CFE_RESERVE_SHIFT   (CFE_SERVICE_SHIFT + CFE_SERVICE_BITS)
-#define CFE_SEVERITY_SHIFT  (CFE_RESERVE_SHIFT + CFE_RESERVE_BITS)
-   
-
-#define CFE_MISSION_DEFINED_BITMASK     ((CFE_Status_t)0x01ff0000)
-#define CFE_MISSION_ID_SERIAL              0x001
-#define CFE_MISSION_ID_RADIO               0x002
-
-/**
- * Macro for user core status code
- * `s`: Severity
- * `m`: Mission defined id
- * `c`: Specific code
- */
-#define CFE_USER_MODULE_CODE(s, m, c)\
-        (((s)<<CFE_SEVERITY_SHIFT)|(0b00<<CFE_RESERVE_SHIFT)|\
-        (0b000<<CFE_SERVICE_SHIFT)|(((m) & 0x1FF)<<CFE_MISSION_SHIFT)|\
-        ((c) & 0xFFFF))
-
-/**
- * User API macro for Status code generation  
- */
-#define CFE_SERIAL_INFORMATION(n)   CFE_STATUS_C(CFE_USER_MODULE_CODE(0b01, CFE_MISSION_ID_SERIAL, (n)))
-#define CFE_SERIAL_ERROR(n)         CFE_STATUS_C(CFE_USER_MODULE_CODE(0b11, CFE_MISSION_ID_SERIAL, (n)))
-#define CFE_RADIO_INFORMATION(n)    CFE_STATUS_C(CFE_USER_MODULE_CODE(0b01, CFE_MISSION_ID_RADIO, (n)))
-#define CFE_RADIO_ERROR(n)          CFE_STATUS_C(CFE_USER_MODULE_CODE(0b11, CFE_MISSION_ID_RADIO, (n)))
 
 /*
 ************* COMMON STATUS CODES *************
@@ -1406,7 +1365,6 @@ char *CFE_ES_StatusToString(CFE_Status_t status, CFE_StatusString_t *status_stri
 #define CFE_TIME_BAD_ARGUMENT ((CFE_Status_t)0xce000005)
 /**@}*/
 
-
 /*
 ************* SERIAL SERVICES STATUS CODES *************
 */
@@ -1419,8 +1377,9 @@ char *CFE_ES_StatusToString(CFE_Status_t status, CFE_StatusString_t *status_stri
  * IO Err : 50 ~ 59
  * CAN Err : 60 ~ 69
  * Mutex Err : 70 ~ 79
- * Early Init Err : 80 ~ 89
- * I2C Err : 90 ~ 99
+ * I2C Err : 80 ~ 89
+ * Early Init Err : 90 ~ 109 -> defined in `cfe_srl_error.h`
+ * 
  */
 #define CFE_SRL_ERR                     CFE_SERIAL_ERROR(1)
 #define CFE_SRL_BAD_ARGUMENT            CFE_SERIAL_ERROR(2)
@@ -1478,18 +1437,6 @@ char *CFE_ES_StatusToString(CFE_Status_t status, CFE_StatusString_t *status_stri
 #define CFE_SRL_MUTEX_SET_PROTOCOL_ERR  CFE_SERIAL_ERROR(74)
 #define CFE_SRL_MUTEX_DESTROY_ERR       CFE_SERIAL_ERROR(75)
 
-#define CFE_SRL_I2C0_INIT_ERR           CFE_SERIAL_ERROR(80)
-#define CFE_SRL_I2C1_INIT_ERR           CFE_SERIAL_ERROR(81)
-#define CFE_SRL_I2C2_INIT_ERR           CFE_SERIAL_ERROR(82)
-#define CFE_SRL_CAN_INIT_ERR            CFE_SERIAL_ERROR(83)
-#define CFE_SRL_UART_INIT_ERR           CFE_SERIAL_ERROR(84)
-#define CFE_SRL_RS422_INIT_ERR          CFE_SERIAL_ERROR(85)
-#define CFE_SRL_GPIO_INIT_ERR           CFE_SERIAL_ERROR(86)
-#define CFE_SRL_SOCAT_INIT_ERR          CFE_SERIAL_ERROR(87)
+#define CFE_SRL_I2C_ADDR_ERR            CFE_SERIAL_ERROR(80)
 
-#define CFE_SRL_I2C_ADDR_ERR            CFE_SERIAL_ERROR(88)
-       
-/*
-************* RADIO SERVICES STATUS CODES *************
-*/
 #endif /* CFE_ERROR_H */

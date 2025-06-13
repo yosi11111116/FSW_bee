@@ -53,7 +53,10 @@
         "osconfig.h": "c",
         "gpiod.h": "c",
         "cfe_evs_mission_cfg.h": "c",
-        "unistd.h": "c"
+        "unistd.h": "c",
+        "future": "cpp",
+        "system_error": "cpp",
+        "regex": "cpp"
     },
     "cmake.sourceDirectory": "/home/hj/Documents/FSW/tools/elf2cfetbl"
 }

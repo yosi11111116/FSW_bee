@@ -200,3 +200,67 @@ int CFE_SRL_GpioInit(CFE_SRL_GPIO_Handle_t *Handle, const char *Path, unsigned i
 
     return CFE_SUCCESS;
 }
+
+/*************************************************************
+ * 
+ *  SPI setting Function
+ * 
+ *************************************************************/
+int32 CFE_SRL_SetModeSPI(CFE_SRL_IO_Handle_t *Handle, uint8_t Mode) {
+    int32 Status;
+
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
+
+    Status = ioctl(Handle->FD, SPI_IOC_WR_MODE, &Mode);
+    if (Status < 0) {
+        Handle->__errno = errno;
+        return CFE_SRL_IOCTL_ERR;
+    }
+
+    return CFE_SUCCESS;
+}
+
+int32 CFE_SRL_SetSpeedSPI(CFE_SRL_IO_Handle_t *Handle, uint32_t Speed) {
+    int32 Status;
+
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
+
+    Status = ioctl(Handle->FD, SPI_IOC_WR_MAX_SPEED_HZ, &Speed);
+    if (Status < 0) {
+        Handle->__errno = errno;
+        return CFE_SRL_IOCTL_ERR;
+    }
+
+    return CFE_SUCCESS;
+}
+
+int32 CFE_SRL_SetBitPerWordSPI(CFE_SRL_IO_Handle_t *Handle, uint8_t BitPerWord) {
+    int32 Status;
+
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
+
+    Status = ioctl(Handle->FD, SPI_IOC_WR_BITS_PER_WORD, &BitPerWord);
+    if (Status < 0) {
+        Handle->__errno = errno;
+        return CFE_SRL_IOCTL_ERR;
+    }
+
+    return CFE_SUCCESS;
+}
+
+int32 CFE_SRL_SetSPI(CFE_SRL_IO_Handle_t *Handle, uint8_t Mode, uint32_t Speed, uint8_t BitPerWord) {
+    int32 Status;
+
+    if (Handle == NULL ) return CFE_SRL_BAD_ARGUMENT;
+
+    Status = CFE_SRL_SetModeSPI(Handle, Mode);
+    if (Status != CFE_SUCCESS) return Status;
+
+    Status = CFE_SRL_SetSpeedSPI(Handle, Speed);
+    if (Status != CFE_SUCCESS) return Status;
+
+    Status = CFE_SRL_SetBitPerWordSPI(Handle, BitPerWord);
+    if (Status != CFE_SUCCESS) return Status;
+
+    return CFE_SUCCESS;
+}
