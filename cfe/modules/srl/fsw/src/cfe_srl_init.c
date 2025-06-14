@@ -11,11 +11,7 @@ CFE_SRL_IO_Handle_t *Handles[CFE_SRL_GNRL_DEVICE_NUM];
 /**************************************************
  * Index of Each device
  * 0 : SOCAT Handle
- * 1 : SPIO Handle
  **************************************************/
-
-CFE_SRL_GPIO_Handle_t *GPIO[CFE_SRL_TOT_GPIO_NUM];
-
 
 /************************************************************************
  * Early Initialization function executed at cFE ES
@@ -35,16 +31,11 @@ int32 CFE_SRL_EarlyInit(void) {
 	 **************************************************/
 	/* socat Init */
 	Status = CFE_SRL_HandleInit(&Handles[CFE_SRL_SOCAT_HANDLE_INDEXER], "socat", "/dev/pts/4", SRL_DEVTYPE_UART, CFE_SRL_SOCAT_HANDLE_INDEXER, 115200, 0);
+	Handles[CFE_SRL_SOCAT_HANDLE_INDEXER]->Func.TxFunc = CFE_SRL_WriteGenericUART;
+	Handles[CFE_SRL_SOCAT_HANDLE_INDEXER]->Func.RxFunc = CFE_SRL_ReadGenericUART;
 	if (Status != CFE_SUCCESS) {
 		CFE_ES_WriteToSysLog("%s: socat Initialization failed! RC=%d\n", __func__, Status);
 		return CFE_SRL_SOCAT_INIT_ERR;
-	}
-
-	/* SPIO Init */
-	Status = CFE_SRL_HandleInit(&Handles[CFE_SRL_SPIO_HANDLE_INDEXER], "SPIO", "/dev/spidev0.0", SRL_DEVTYPE_SPI, CFE_SRL_SPIO_HANDLE_INDEXER, 8000000, 0);
-	if (Status != CFE_SUCCESS) {
-		CFE_ES_WriteToSysLog("%s: SPIO Initialization failed! RC=%d\n", __func__, Status);
-		return CFE_SRL_SPIO_INIT_ERR;
 	}
 
 return CFE_SUCCESS;

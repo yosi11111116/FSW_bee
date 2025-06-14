@@ -30,7 +30,7 @@
             "baudrate": 115200
         },
         {
-            "type": "rs422",
+            "type": "uart",
             "ready": false,
             "name": "RS422",
             "DevName": "/dev/ttyS1",
@@ -40,21 +40,22 @@
         {
             "type": "gpio", 
             "ready": false, 
-            "name":"ADCS_EN", 
+            "name":"ADCS_EN",
             "DevName": "/dev/gpiochip0",
             "line": 28,
             "default": 0,
             "direction": "out"
         },
         {
-            "type": "socat",
+            "type": "uart",
             "ready": true,
             "name": "socat",
-            "DevName": "/dev/pts/4"
+            "DevName": "/dev/pts/4",
+            "baudrate": 115200
         },
         {
             "type": "spi",
-            "ready": true,
+            "ready": false,
             "name": "SPIO",
             "DevName": "/dev/spidev0.0",
             "mode": 0,

@@ -30,7 +30,7 @@ CFE_SRL_IO_Handle_t *CFE_SRL_ApiGetHandle(CFE_SRL_Handle_Indexer_t Index);
 /// @param Size Size of the `Data`
 /// @param Addr Address of external device. (I2C, CAN) If not needded, put `NULL`
 /// @return Only `CFE_SRL_OK`(which is `0`) is success.
-int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Size, uint32_t Addr);
+int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params);
 
 
 /// @brief Read data from external device via various serial comm. protocol
@@ -42,7 +42,7 @@ int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Siz
 /// @param Timeout Blocking time for Read. Unit is *millisec*
 /// @param Addr Address for external device. (I2C, CAN) If not needed, put `NULL`
 /// @return Only `CFE_SRL_OK`(which is `0`) is success.
-int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t TxSize, void *RxData, size_t RxSize, uint32_t Timeout, uint32_t Addr);
+int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params);
 
 
 /// @brief Close Serial Interface

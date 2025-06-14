@@ -75,6 +75,10 @@ int32 CFE_SRL_WriteI2C(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Siz
     return CFE_SUCCESS;
 }
 
+int32 CFE_SRL_WriteGenericI2C(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
+    return CFE_SRL_WriteI2C(Handle, Params->TxData, Params->TxSize, Params->Addr);
+}
+
 /*----------------------------------------------------------------
  *
  * Implemented per public API
@@ -102,6 +106,10 @@ int32 CFE_SRL_WriteUART(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Si
     if (Status != CFE_SUCCESS) return Status;
 
     return CFE_SUCCESS;
+}
+
+int32 CFE_SRL_WriteGenericUART(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
+    return CFE_SRL_WriteUART(Handle, Params->TxData, Params->TxSize);
 }
 
 /*----------------------------------------------------------------
@@ -143,6 +151,10 @@ int32 CFE_SRL_WriteCAN(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Siz
     return CFE_SUCCESS;
 }
 
+int32 CFE_SRL_WriteGenericCAN(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
+    return CFE_SRL_WriteCAN(Handle, Params->TxData, Params->TxSize, Params->Addr);
+}
+
 /*----------------------------------------------------------------
  *
  * Implemented per public API
@@ -179,6 +191,9 @@ int32 CFE_SRL_WriteSPI(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Siz
 
     return CFE_SUCCESS;
 }
+int32 CFE_SRL_WriteGenericSPI(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
+    return CFE_SRL_WriteSPI(Handle, Params->TxData, Params->TxSize);
+}
 
 
 /**
@@ -213,6 +228,10 @@ int32 CFE_SRL_ReadI2C(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t Tx
     if (Status != CFE_SUCCESS) return Status;
 
     return CFE_SUCCESS;
+}
+
+int32 CFE_SRL_ReadGenericI2C(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
+    return CFE_SRL_ReadI2C(Handle, Params->TxData, Params->TxSize, Params->RxData, Params->RxSize, Params->Addr);
 }
 
 /*----------------------------------------------------------------
@@ -252,6 +271,10 @@ int32 CFE_SRL_ReadUART(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t T
     return CFE_SUCCESS;
 }
 
+int32 CFE_SRL_ReadGenericUART(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
+    return CFE_SRL_ReadUART(Handle, Params->TxData, Params->TxSize, Params->RxData, Params->RxSize, Params->Timeout);
+}
+
 /*----------------------------------------------------------------
  *
  * Implemented per public API
@@ -287,6 +310,10 @@ int32 CFE_SRL_ReadCAN(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t Tx
     if (Status != CFE_SUCCESS) return Status;
 
     return CFE_SUCCESS;
+}
+
+int32 CFE_SRL_ReadGenericCAN(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
+    return CFE_SRL_ReadCAN(Handle, Params->TxData, Params->TxSize, Params->RxData, Params->RxSize, Params->Timeout, Params->Addr);
 }
 
 /*----------------------------------------------------------------
@@ -325,4 +352,8 @@ int32 CFE_SRL_ReadSPI(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t Tx
     if (Status != CFE_SUCCESS) return Status;
 
     return CFE_SUCCESS;
+}
+
+int32 CFE_SRL_ReadGenericSPI(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
+    return CFE_SRL_ReadSPI(Handle, Params->TxData, Params->TxSize, Params->RxData, Params->RxSize);
 }
