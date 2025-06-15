@@ -34,13 +34,16 @@ struct CFE_SRL_IO_Handle_s {
 };
 
 struct CFE_SRL_IO_Param_s {
+    /* Pointer of Tx Data buffer */
     void *TxData;
+    /* Size of Tx Data */
     size_t TxSize;
+    /* Pointer of Rx Data buffer - No need for Write */
     void *RxData;
+    /* Size of Rx Size - No need for Write */
     size_t RxSize;
-
     /**
-     * Used for ApiRead
+     * Used for ApiRead - Not used in I2C, SPI
      */
     uint32_t Timeout;
     /**

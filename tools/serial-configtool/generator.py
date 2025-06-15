@@ -9,7 +9,7 @@ namearr = Get_general_srl_namearr(interfaces)
 
 # Generate cfe_srl_mission_cfg.h
 with open('../../cfe/modules/srl/config/default_cfe_srl_mission_cfg.h', 'w') as f:
-    f.write("/* Auto-Generated file */\n")
+    f.write("/* Auto-Generated file. Never change this code! */\n")
     f.write("#ifndef CFE_SRL_MISSION_CFG_H\n")
     f.write("#define CFE_SRL_MISSION_CFG_H\n")
     f.write("\n")

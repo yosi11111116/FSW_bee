@@ -26,35 +26,28 @@ CFE_SRL_IO_Handle_t *CFE_SRL_ApiGetHandle(CFE_SRL_Handle_Indexer_t Index);
 
 /// @brief Write data to external device via various serial comm. protocol
 /// @param Handle A Pointer of SRL Handle. Distinguish character device file
-/// @param Data  Data want to transmit to external device
-/// @param Size Size of the `Data`
-/// @param Addr Address of external device. (I2C, CAN) If not needded, put `NULL`
-/// @return Only `CFE_SRL_OK`(which is `0`) is success.
+/// @param Params A Pointer of SRL Paramter. Correctly set the members `.TxData`, `.TxSize`. And `.Addr` if needed
+/// @return Only `CFE_SUCCESS`(which is `0`) is success.
 int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params);
 
 
 /// @brief Read data from external device via various serial comm. protocol
 /// @param Handle A Pointer of SRL Handle. Distinguish character device file
-/// @param TxData Data want to transmit to external device. (It might be the specific register of device)
-/// @param TxSize Size of `TxData`
-/// @param RxData Data want to receive from external device. (It might be the specific value / result of write)
-/// @param RxSize Size of `RxData`
-/// @param Timeout Blocking time for Read. Unit is *millisec*
-/// @param Addr Address for external device. (I2C, CAN) If not needed, put `NULL`
-/// @return Only `CFE_SRL_OK`(which is `0`) is success.
+/// @param Params A Pointer of SRL Paramter. Correctly set the members `.TxData`, `.TxSize`, `.RxData`, `RxSize`. And `.Timeout`, `.Addr` if needed
+/// @return Only `CFE_SUCCESS`(which is `0`) is success.
 int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params);
 
 
 /// @brief Close Serial Interface
 /// @param Handle A Pointer of SRL Handle. Distinguish character device file
-/// @return Only `CFE_SRL_OK`(which is `0`) is success.
+/// @return Only `CFE_SUCCESS`(which is `0`) is success.
 int32 CFE_SRL_ApiClose(CFE_SRL_IO_Handle_t * Handle);
 
 
 /// @brief Set specified GPIO PIN to HIGH or LOW
 /// @param Handle `CFE_SRL_GPIO_Handle_t` pointer
 /// @param Value `true` for HIGH, `false` for LOW
-/// @return Only `CFE_SRL_OK`(which is `0`) is success.
+/// @return Only `CFE_SUCCESS`(which is `0`) is success.
 int32 CFE_SRL_ApiGpioSet(CFE_SRL_GPIO_Handle_t *Handle, bool Value);
 
 
@@ -79,7 +72,7 @@ int32 CFE_SRL_ApiTransactionCSP(uint8_t Node, uint8_t Port, void *TxData, int Tx
 /// @param TableId CSP device table ID
 /// @param Addr Parameter address in table
 /// @param Param Pointer of buffer
-/// @return Only `CFE_SRL_OK`(which is `0`) is success
+/// @return Only `CFE_SUCCESS`(which is `0`) is success
 int32 CFE_SRL_ApiGetRparamCSP(uint8_t Type, uint8_t Node, uint8_t TableId, uint16_t Addr, void *Param);
 
 
@@ -89,7 +82,7 @@ int32 CFE_SRL_ApiGetRparamCSP(uint8_t Type, uint8_t Node, uint8_t TableId, uint1
 /// @param TableId CSP device table ID
 /// @param Addr Parameter address in table
 /// @param Param Pointer of buffer
-/// @return Only `CFE_SRL_OK`(which is `0`) is success
+/// @return Only `CFE_SUCCESS`(which is `0`) is success
 int32 CFE_SRL_ApiSetRparamCSP(uint8_t Type, uint8_t Node, uint8_t TableId, uint16_t Addr, void *Param);
 
 #endif /* CFE_SRL_H */
