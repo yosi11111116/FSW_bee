@@ -7,7 +7,7 @@
  *         Do NOT use this function directly in App layer
  ************************************************************************/
 #include <fcntl.h>
-#include <unistd.h>
+
 
 #include <sys/select.h>
 

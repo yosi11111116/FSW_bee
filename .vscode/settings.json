@@ -56,7 +56,19 @@
         "unistd.h": "c",
         "future": "cpp",
         "system_error": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
+        "thread": "c",
+        "fstream": "c",
+        "iosfwd": "c",
+        "istream": "c",
+        "limits": "c",
+        "shared_mutex": "c",
+        "sstream": "c",
+        "streambuf": "c",
+        "*.def": "c",
+        "stop_token": "c",
+        "sample_app_cmds.h": "c",
+        "cfe_config.h": "c"
     },
     "cmake.sourceDirectory": "/home/hj/Documents/FSW/tools/elf2cfetbl"
 }

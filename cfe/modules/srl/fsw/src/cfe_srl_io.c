@@ -34,7 +34,7 @@ int CFE_SRL_Write(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Size) {
     if(!CFE_SRL_QueryStatus((const CFE_SRL_Global_Handle_t *)Handle, CFE_SRL_HANDLE_STATUS_FD_INIT)) {
         return CFE_SRL_NOT_OPEN_ERR;
     }
-
+    OS_printf("FD = %d || Data = %p || Size = %u\n", Handle->FD, Data, (uint32_t)Size);
     WriteBytes = CFE_SRL_BasicWrite(Handle->FD, Data, Size);
     if (WriteBytes < 0) {
         Handle->TxErrCnt++;
@@ -89,14 +89,17 @@ int CFE_SRL_Read(CFE_SRL_IO_Handle_t *Handle, void *Data, size_t Size, uint32_t 
 
 int CFE_SRL_TransactionI2C(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t TxSize, void *RxData, size_t RxSize, uint32_t Addr) {
     int Status;
-    struct i2c_rdwr_ioctl_data Packet;
-    struct i2c_msg MsgI2C[2];
+    struct i2c_rdwr_ioctl_data Packet = {0,};
+    struct i2c_msg MsgI2C[2] = {0,};
 
     // First Message - Write
+    OS_printf("Addr: 0x%02X\n", (uint16_t)Addr);
     MsgI2C[0].addr = (uint16_t)Addr;
     MsgI2C[0].flags = 0;    // Write flag
     MsgI2C[0].len = TxSize;
     MsgI2C[0].buf = (uint8_t *)TxData;
+
+    Packet.nmsgs ++;
 
     // Second Message - Read
     MsgI2C[1].addr = (uint16_t)Addr;
@@ -104,17 +107,18 @@ int CFE_SRL_TransactionI2C(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size
     MsgI2C[1].len = RxSize;
     MsgI2C[1].buf = RxData;
 
+    Packet.nmsgs ++;
+    
     /**
      * Configure Transaction Packet
      */
-    Packet.nmsgs = 2;
     Packet.msgs = MsgI2C;
 
     /**
      * Do transaction
      */
-    Status = CFE_SRL_BasicIOCTL(Handle->FD, I2C_RDWR, &Packet);
-    if (Status != CFE_SUCCESS) {
+    Status = ioctl(Handle->FD, I2C_RDWR, &Packet);
+    if (Status < 0) {
         Handle->__errno = errno;
         return CFE_SRL_READ_ERR;
     }
@@ -154,7 +158,7 @@ int CFE_SRL_OpenSocket(CFE_SRL_IO_Handle_t *Handle, const char *DevName) {
     }
 
     strncpy(Ifr.ifr_name, DevName, IFNAMSIZ-1);
-    Status = CFE_SRL_BasicIOCTL(Socket, SIOCGIFINDEX, &Ifr); // Get interface index number
+    Status = ioctl(Socket, SIOCGIFINDEX, &Ifr); // Get interface index number
     if (Status < 0) {
         Handle->__errno = errno;
         CFE_SRL_BasicClose(Socket);
@@ -186,7 +190,7 @@ int CFE_SRL_OpenSocket(CFE_SRL_IO_Handle_t *Handle, const char *DevName) {
  *************************************************************/
 int CFE_SRL_GpioInit(CFE_SRL_GPIO_Handle_t *Handle, const char *Path, unsigned int Line, const char *Name, bool Default) {
     int Status;
-
+    OS_printf("GPIO Handle address: %p\n",Handle);
     if (Handle == NULL || Path == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Status = CFE_SRL_BasicGpioOpen(Handle, Path);

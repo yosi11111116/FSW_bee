@@ -14,6 +14,7 @@
 #include <sys/types.h>
 #include <stdbool.h>
 #include <errno.h>
+#include <unistd.h>
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
