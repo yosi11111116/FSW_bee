@@ -57,9 +57,7 @@ int32 CFE_SRL_EarlyInit(void) {
 	/* GPIO STX_EN Init */
 	Status = CFE_SRL_GpioInit(&GPIO[CFE_SRL_STX_EN_GPIO_INDEXER], "/dev/gpiochip2", 3, "STX_EN", 0);
 	if (Status != CFE_SUCCESS) {
-		CFE_StatusString_t str;
-		CFE_ES_StatusToString(Status, &str);
-		CFE_ES_WriteToSysLog("%s: GPIO STX_EN Initialization failed! RC=%s\n", __func__, str);
+		CFE_ES_WriteToSysLog("%s: GPIO STX_EN Initialization failed! RC=%d\n", __func__, Status);
 		return CFE_SRL_STX_EN_INIT_ERR;
 	}
 
@@ -73,11 +71,5 @@ int32 CFE_SRL_EarlyInit(void) {
 	}
 	CFE_ES_WriteToSysLog("%s: SPI0 Initialized. FD=%d || DevName=%s\n", __func__, Handles[CFE_SRL_SPI0_HANDLE_INDEXER]->FD, ((CFE_SRL_Global_Handle_t *)Handles[CFE_SRL_SPI0_HANDLE_INDEXER])->DevName);
 
-
-	Status = CFE_SRL_InitCSP();
-	if (Status != CFE_SUCCESS) {
-		CFE_ES_WriteToSysLog("%s: CSP_Init failed! RC=0x%08X\n", __func__, Status);
-	}
-	CFE_ES_WriteToSysLog("%s: CSP Initialized.\n", __func__);
 return CFE_SUCCESS;
 }

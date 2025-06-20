@@ -93,7 +93,6 @@ int CFE_SRL_TransactionI2C(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size
     struct i2c_msg MsgI2C[2] = {0,};
 
     // First Message - Write
-    OS_printf("Addr: 0x%02X\n", (uint16_t)Addr);
     MsgI2C[0].addr = (uint16_t)Addr;
     MsgI2C[0].flags = 0;    // Write flag
     MsgI2C[0].len = TxSize;
