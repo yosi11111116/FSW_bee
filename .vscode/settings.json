@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "sample_app_tbl.h": "c",
+        "cfe_core_api_base_msgids.h": "c",
+        "stx_topicids.h": "c"
+    }
+}

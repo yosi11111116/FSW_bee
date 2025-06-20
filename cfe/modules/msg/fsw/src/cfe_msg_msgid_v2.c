@@ -70,7 +70,14 @@ CFE_Status_t CFE_MSG_GetMsgId(const CFE_MSG_Message_t *MsgPtr, CFE_SB_MsgId_t *M
     if (type == CFE_MSG_Type_Cmd)
     {
         msgidval |= CFE_MSG_MSGID_TYPE_MASK;
+
+
+
+
+        
     }
+
+
     msgidval |= (MsgPtr->CCSDS.Ext.Subsystem[1] << 8) & CFE_MSG_MSGID_SUBSYS_MASK;
 
     *MsgId = CFE_SB_ValueToMsgId(msgidval);

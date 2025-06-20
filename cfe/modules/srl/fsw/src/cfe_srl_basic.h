@@ -22,7 +22,7 @@
 #include <linux/i2c-dev.h>
 #include <linux/i2c.h>
 #include "cfe.h"
-#include <gpiod.h>
+#include </usr/include/gpiod.h>
 #include "cfe_srl_eventids.h"
 
 // #define CFE_SRL_GLOBAL_HANDLE_NUM   20
