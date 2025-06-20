@@ -5,7 +5,7 @@
 
 #include <fcntl.h>
 
-CFE_SRL_Global_Handle_t GlobalHandle[CFE_SRL_GLOBAL_HANDLE_NUM] = {0};
+static CFE_SRL_Global_Handle_t GlobalHandle[CFE_SRL_GLOBAL_HANDLE_NUM] = {0};
 
 
 int CFE_SRL_PriorInit(void) {
@@ -23,6 +23,7 @@ int CFE_SRL_GetOpenOption(CFE_SRL_DevType_t Devtype) {
     switch (Devtype) {
         case SRL_DEVTYPE_I2C:
         case SRL_DEVTYPE_SPI:
+        case SRL_DEVTYPE_CAN: // Meaningless
             return O_RDWR;
         case SRL_DEVTYPE_UART:
         case SRL_DEVTYPE_RS422:
@@ -74,7 +75,7 @@ int CFE_SRL_GlobalHandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, con
 
 
 
-int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const char *Devname, uint8_t DevType, uint8_t MutexID, uint32_t BaudRate) {
+int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const char *Devname, uint8_t DevType, uint8_t MutexID, uint32_t BaudRate, uint8_t SPIMode) {
     int Status;
     CFE_SRL_IO_Handle_t *TempHandle;
     int OpenOption;
@@ -120,6 +121,10 @@ int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const cha
         Status = CFE_SRL_BasicSetUART(*Handle, BaudRate);
 
         if (Status != CFE_SUCCESS) return CFE_SRL_UART_SET_ERR;
+    }
+
+    if (DevType == SRL_DEVTYPE_SPI) {
+        Status = CFE_SRL_SetSPI(*Handle, SPIMode, BaudRate, 8);
     }
     return CFE_SUCCESS;
 }

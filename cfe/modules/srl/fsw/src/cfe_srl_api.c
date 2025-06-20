@@ -35,6 +35,11 @@ CFE_SRL_IO_Handle_t *CFE_SRL_ApiGetHandle(CFE_SRL_Handle_Indexer_t Index) {
     return CFE_SRL_GetHandle(Index);
 }
 
+CFE_SRL_GPIO_Handle_t *CFE_SRL_ApiGetGpioHandle(CFE_SRL_GPIO_Indexer_t Index) {
+    return CFE_SRL_GetGpioHandle(Index);
+}
+
+
 /*----------------------------------------------------------------
  *
  * Serial Write API
@@ -42,31 +47,10 @@ CFE_SRL_IO_Handle_t *CFE_SRL_ApiGetHandle(CFE_SRL_Handle_Indexer_t Index) {
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Size, uint32_t Addr) {
-    int32 Status;
-    CFE_SRL_DevType_t DevType;
+int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
+    if (Handle == NULL || Handle->Func.TxFunc == NULL ||Params->TxData == NULL) return CFE_SRL_BAD_ARGUMENT;
 
-    if (Handle == NULL || Data == NULL) return CFE_SRL_BAD_ARGUMENT;
-
-    DevType = CFE_SRL_GetHandleDevType(Handle);
-
-    switch(DevType) {
-        case SRL_DEVTYPE_I2C:
-            Status = CFE_SRL_WriteI2C(Handle, Data, Size, (uint8_t)Addr);
-            break;
-        case SRL_DEVTYPE_UART:
-        case SRL_DEVTYPE_RS422:
-            Status = CFE_SRL_WriteUART(Handle, Data, Size);
-            break;
-        case SRL_DEVTYPE_CAN:
-            Status = CFE_SRL_WriteCAN(Handle, Data, Size, Addr);
-            break;
-        default:
-            Status = CFE_SRL_TYPE_UNSUPPORTED;
-            break;
-    }
-
-    return Status;
+    return Handle->Func.TxFunc(Handle, Params);
 }
 
 
@@ -77,30 +61,11 @@ int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Siz
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t TxSize, void *RxData, size_t RxSize, uint32_t Timeout, uint32_t Addr) {
-    int32 Status;
-    CFE_SRL_DevType_t DevType;
+int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
+    if (Handle == NULL || Handle->Func.RxFunc == NULL || 
+        Params->TxData == NULL || Params->RxData == NULL) return CFE_SRL_BAD_ARGUMENT;
 
-    if (Handle == NULL || TxData == NULL || RxData == NULL) return CFE_SRL_BAD_ARGUMENT;
-
-    DevType = CFE_SRL_GetHandleDevType(Handle);
-
-    switch(DevType) {
-        case SRL_DEVTYPE_I2C:
-            Status = CFE_SRL_ReadI2C(Handle, TxData, TxSize, RxData, RxSize, Addr);
-            break;
-        case SRL_DEVTYPE_UART:
-        case SRL_DEVTYPE_RS422:
-            Status = CFE_SRL_ReadUART(Handle, TxData, TxSize, RxData, RxSize, Timeout);
-            break;
-        case SRL_DEVTYPE_CAN:
-            Status = CFE_SRL_ReadCAN(Handle, TxData, TxSize, RxData, RxSize, Timeout, Addr);
-            break;
-        default:
-            Status = CFE_SRL_TYPE_UNSUPPORTED;
-            break;
-    }
-    return Status;
+    return Handle->Func.RxFunc(Handle, Params);
 }
 
 

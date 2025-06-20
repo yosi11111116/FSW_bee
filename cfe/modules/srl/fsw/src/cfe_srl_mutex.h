@@ -16,12 +16,6 @@ extern pthread_mutex_t GlobalHandleMutex;
 // Index : `MutexID`
 extern CFE_SRL_IO_Handle_Mutex_t IOMutex[CFE_SRL_GNRL_DEVICE_NUM];
 
-#define CFE_SRL_I2C0_MUTEX_IDX          0
-#define CFE_SRL_I2C1_MUTEX_IDX          1
-#define CFE_SRL_I2C2_MUTEX_IDX          2
-#define CFE_SRL_UART_MUTEX_IDX          3
-#define CFE_SRL_RS422_MUTEX_IDX         4
-#define CFE_SRL_CAN0_MUTEX_IDX          5
 
 int CFE_SRL_GlobalHandleMutexInit(void);
 int CFE_SRL_GlobalHandleMutexLock(void);

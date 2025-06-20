@@ -48,7 +48,6 @@
 #include "cfe_tbl.h"  /* Define Table Service API */
 
 #include "cfe_srl.h"  /* Define Serial comm. Service API */
-#include "cfe_rf.h"  /* Define Radio comm. Service API */
 
 #include "cfe_msg.h"        /* Define Message API */
 #include "cfe_resourceid.h" /* Define ResourceID API */

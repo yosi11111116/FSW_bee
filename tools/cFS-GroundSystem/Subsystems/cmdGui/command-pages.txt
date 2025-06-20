@@ -29,8 +29,6 @@ Event Services,             CFE_EVS_CMD,        0x1801, LE, UdpCommands.py,  127
 Command Ingest,             CI_LAB_CMD,         0x1884, LE, UdpCommands.py,  127.0.0.1,   1234
 Telemetry Output,           TO_LAB_CMD,         0x1880, LE, UdpCommands.py,  127.0.0.1,   1234
 Sample App,                 SAMPLE_APP_CMD,     0x1882, LE, UdpCommands.py,  127.0.0.1,   1234
-#STX SET App,               test_bee1000,       0x1874, LE, UdpCommands.py,  127.0.0.1,   1234
-STX GET App,                get,                0x1875, LE, UdpCommands.py,  127.0.0.1,   1234
 Spare,                                    ,     0x0000, LE, UdpCommands.py,  127.0.0.1,   1234
 Spare,                                    ,     0x0000, LE, UdpCommands.py,  127.0.0.1,   1234
 LEGACY DEFINITIONS,                       ,     0x0000, LE, UdpCommands.py,  127.0.0.1,   1234

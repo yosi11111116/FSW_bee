@@ -50,7 +50,6 @@ cfs_app_check_intf(core_api
     cfe_sb_extern_typedefs.h
     cfe_tbl_extern_typedefs.h
     cfe_time_extern_typedefs.h
-    cfe_srl_extern_typedefs.h
 
     cfe_tbl_filedef.h
 )

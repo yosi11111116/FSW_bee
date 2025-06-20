@@ -1,7 +1,31 @@
 {
     "files.associations": {
-        "sample_app_tbl.h": "c",
-        "cfe_core_api_base_msgids.h": "c",
-        "stx_topicids.h": "c"
-    }
+        "cfe_srl_module_all.h": "c",
+        "can_socketcan.h": "c",
+        "gssb_i4.h": "c",
+        "gssb_ant6.h": "c",
+        "csp_if_i2c.h": "c",
+        "gssb_ar6.h": "c",
+        "cfe_srl_csp.h": "c",
+        "csp.h": "c",
+        "cfe_srl_handle.h": "c",
+        "cfe_srl_io_stub.h": "c",
+        "cfe_srl_basic.h": "c",
+        "csp_interface.h": "c",
+        "conn.h": "c",
+        "csp_autoconfig.h": "c",
+        "termios.h": "c",
+        "features.h": "c",
+        "termios-struct.h": "c",
+        "termbits.h": "c",
+        "ioctl.h": "c",
+        "ioctl-types.h": "c",
+        "ioctls.h": "c",
+        "types.h": "c",
+        "int-ll64.h": "c",
+        "cfe_srl_api_typedefs.h": "c",
+        "cfe_srl_eventids.h": "c",
+        "cfe_srl_mission_cfg.h": "c"
+    },
+    "cmake.sourceDirectory": "/home/hj/Documents/FSW/tools/elf2cfetbl"
 }
