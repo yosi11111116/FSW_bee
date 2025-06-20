@@ -30,7 +30,7 @@ int CFE_SRL_RouteInitCSP(void) {
     Status = csp_route_start_task(CSP_TASK_STACK_SIZE(1), GS_THREAD_PRIORITY_HIGH);
     if (Status != CSP_ERR_NONE) {
         CFE_ES_WriteToSysLog("%s: csp_route_start_task failed! CSP RC=%d\n", __func__, Status);
-        return Status;
+        return CFE_SRL_CSP_ROUTE_START_ERR;
     }
 
     /**
@@ -39,46 +39,35 @@ int CFE_SRL_RouteInitCSP(void) {
     InterfaceCAN = csp_can_socketcan_init(CSP_CAN_DEV_NAME, 0, false);
     if (InterfaceCAN == NULL) {
         CFE_ES_WriteToSysLog("%s: CSP Socket CAN Init failed! NO RC", __func__);
-        return -1; // Revise to `CSP_CAN_INIT_ERR`
+        return CFE_SRL_CSP_CAN_INIT_ERR;
     }
 
     /**
      * CSP I2C Initialization
      */
-    Status = gs_csp_i2c_init2(0, 0, "BPX", false, &InterfaceI2C); // I2C/CSP ADDR `0x07`
-    if (Status != GS_OK) {
-        CFE_ES_WriteToSysLog("%s: CSP I2C Init failed! NO RC", __func__);
-        return -1; // Revise to `CSP_I2C_INIT_ERR`
-    }
-
+    Status = gs_csp_i2c_init2(0, 0, "p31u", false, &InterfaceI2C);
+    if (Status != GS_OK) return CFE_SRL_CSP_I2C_INIT_ERR;
 
     /**
      * CSP Routing Table setting
      */
-
     /* CAN */
-    Status = csp_rtable_set(CSP_NODE_ACU, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NO_VIA_ADDRESS);
-    if (Status != CSP_ERR_NONE) return -1;
-
-    Status = csp_rtable_set(CSP_NODE_PDU, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NO_VIA_ADDRESS);
-    if (Status != CSP_ERR_NONE) return -1;
-
-    Status = csp_rtable_set(CSP_NODE_DOCK, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NO_VIA_ADDRESS);
-    if (Status != CSP_ERR_NONE) return -1;
-
     Status = csp_rtable_set(CSP_NODE_UTRX, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NO_VIA_ADDRESS);
-    if (Status != CSP_ERR_NONE) return -1; // Revise to `CSP_RTABLE_ERR`
+    if (Status != CSP_ERR_NONE) return CFE_SRL_CSP_RTABLE_SET_ERR;
+
+    Status = csp_rtable_set(CSP_NODE_STRX, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NO_VIA_ADDRESS);
+    if (Status != CSP_ERR_NONE) return CFE_SRL_CSP_RTABLE_SET_ERR;
 
     Status = csp_rtable_set(CSP_NODE_GS_KISS, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NODE_UTRX);
-    if (Status != CSP_ERR_NONE) return -1; // Revise to `CSP_RTABLE_ERR`
+    if (Status != CSP_ERR_NONE) return CFE_SRL_CSP_RTABLE_SET_ERR;
 
     Status = csp_rtable_set(CSP_NODE_GSTRX, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NODE_UTRX);
-    if (Status != CSP_ERR_NONE) return -1; // Revise to `CSP_RTABLE_ERR`
-    /* I2C - BPX */
-    Status = csp_rtable_set(CSP_NODE_BAT, CSP_NODE_FIX_MASK, InterfaceI2C, CSP_NO_VIA_ADDRESS);
-    if (Status != CSP_ERR_NONE) return -1; // Revise to `CSP_RTABLE_ERR`
+    if (Status != CSP_ERR_NONE) return CFE_SRL_CSP_RTABLE_SET_ERR;
+    /* I2C */
+    Status = csp_rtable_set(CSP_NODE_EPS, CSP_NODE_FIX_MASK, InterfaceI2C, CSP_NO_VIA_ADDRESS);
+    if (Status != CSP_ERR_NONE) return CFE_SRL_CSP_RTABLE_SET_ERR;
     
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 int CFE_SRL_NodeConfigCSP(uint8_t Node, uint8_t Priority, uint32_t Timeout, uint32_t Options) {
@@ -91,15 +80,15 @@ int CFE_SRL_NodeConfigCSP(uint8_t Node, uint8_t Priority, uint32_t Timeout, uint
     NodeConfig[Node]->Timeout = Timeout;
     NodeConfig[Node]->Options = Options;
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 int CFE_SRL_GetNodeConfigCSP(uint8_t Node, CFE_SRL_CSP_Node_Config_t **Config) {
-    if (Config == NULL) return CFE_SRL_NULL_ERR;
+    if (Config == NULL) return CFE_SRL_BAD_ARGUMENT;
     if (NodeConfig[Node] == NULL) return CFE_SRL_NOT_FOUND;
 
     *Config = NodeConfig[Node];
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 /**
@@ -126,16 +115,16 @@ int CFE_SRL_InitCSP(void) {
     Status = csp_init(&CspConfig);
     if (Status != CSP_ERR_NONE) {
         CFE_ES_WriteToSysLog("%s: csp_init failed! CSP RC=%d\n",__func__, Status);
-        return Status;
+        return CFE_SRL_CSP_INIT_ERR;
     }
 
     /**
      * Init CSP CAN and Register Routing Configuration
      */
     Status = CFE_SRL_RouteInitCSP();
-    if (Status != CFE_SRL_OK) {
+    if (Status != CFE_SUCCESS) {
         CFE_ES_WriteToSysLog("%s: CSP Route Init failed! CSP RC=%d\n", __func__, Status);
-        return -1; // Revise to `ROUTE_INIT_ERR`
+        return CFE_SRL_CSP_ROUTE_INIT_ERR;
     }
 
 
@@ -152,7 +141,7 @@ int CFE_SRL_InitCSP(void) {
     CFE_SRL_NodeConfigCSP(CSP_NODE_GS_KISS, CSP_PRIO_HIGH, CSP_TIMEOUT(3), CSP_O_CRC32);
     CFE_SRL_NodeConfigCSP(CSP_NODE_GSTRX, CSP_PRIO_HIGH, CSP_TIMEOUT(3), CSP_O_CRC32);
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 /**
@@ -162,10 +151,10 @@ int CFE_SRL_InitCSP(void) {
 int CFE_SRL_TransactionCSP(uint8_t Node, uint8_t Port, void *TxData, int TxSize, void *RxData, int RxSize) {
     // If there is no reply, Put `RxSize = 0`
     int Status;
-    if (NodeConfig[Node] == NULL || TxData == NULL || RxData == NULL) return CFE_SRL_NULL_ERR;
+    if (NodeConfig[Node] == NULL || TxData == NULL || RxData == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Status = csp_transaction_w_opts(NodeConfig[Node]->Priority, Node, Port, NodeConfig[Node]->Timeout, TxData, TxSize, RxData, RxSize, NodeConfig[Node]->Options);
-    if (Status == 0) return Status; // Revise to `CSP_TRANSACTION_ERR`
+    if (Status == 0) return CFE_SRL_TRANSACTION_ERR;
 
     // 1 or `reply size` on success
     return Status;
@@ -176,13 +165,13 @@ int CFE_SRL_TransactionCSP(uint8_t Node, uint8_t Port, void *TxData, int TxSize,
  * These functions wrapped to API function
  * Do NOT call this function directly
  */
-int CFE_SRL_GetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param) {
+int CFE_SRL_GetRparamCSP(uint8_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param) {
     int Status;
     CFE_SRL_CSP_Node_Config_t *Config;
-    if (Param == NULL) return CFE_SRL_NULL_ERR;
+    if (Param == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Status = CFE_SRL_GetNodeConfigCSP(Node, &Config);
-    if (Status != CFE_SRL_OK) return Status;
+    if (Status != CFE_SUCCESS) return CFE_SRL_CSP_GET_CONFIG_ERR;
 
     switch(Type) {
         case GS_PARAM_UINT8:    
@@ -220,19 +209,20 @@ int CFE_SRL_GetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t
             break;
     }
 
-    if (Status != GS_OK) return Status;
-
-    return CFE_SRL_OK;
+    if (Status != GS_OK) {
+        CFE_ES_WriteToSysLog("%s: Get param failed! CSP RC=%d", __func__, Status);
+        return CFE_SRL_GET_RPARAM_ERR;
+    }
+    return CFE_SUCCESS;
 }
 
-int CFE_SRL_SetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param) {
+int CFE_SRL_SetRparamCSP(uint8_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param) {
     int Status;
     CFE_SRL_CSP_Node_Config_t *Config;
-    if (Param == NULL) return CFE_SRL_NULL_ERR;
+    if (Param == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Status = CFE_SRL_GetNodeConfigCSP(Node, &Config);
-    if (Status != CFE_SRL_OK) return Status;
-
+    if (Status != CFE_SUCCESS) return CFE_SRL_CSP_GET_CONFIG_ERR;
     switch(Type) {
         case GS_PARAM_UINT8:
             Status = gs_rparam_set_uint8(Node, TableId, Addr, GS_RPARAM_MAGIC_CHECKSUM, Config->Timeout, *(uint8_t *)Param);
@@ -269,7 +259,9 @@ int CFE_SRL_SetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t
             break;
     }
 
-    if (Status != GS_OK) return Status;
-
-    return CFE_SRL_OK;
+    if (Status != GS_OK) {
+        CFE_ES_WriteToSysLog("%s: Set param failed! CSP RC=%d", __func__, Status);
+        return CFE_SRL_SET_RPARAM_ERR;
+    }
+    return CFE_SUCCESS;
 }

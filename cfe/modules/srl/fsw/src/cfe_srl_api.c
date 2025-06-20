@@ -34,6 +34,7 @@
 CFE_SRL_IO_Handle_t *CFE_SRL_ApiGetHandle(CFE_SRL_Handle_Indexer_t Index) {
     return CFE_SRL_GetHandle(Index);
 }
+
 /*----------------------------------------------------------------
  *
  * Serial Write API
@@ -45,7 +46,7 @@ int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Siz
     int32 Status;
     CFE_SRL_DevType_t DevType;
 
-    if (Handle == NULL || Data == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL || Data == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     DevType = CFE_SRL_GetHandleDevType(Handle);
 
@@ -61,7 +62,7 @@ int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Siz
             Status = CFE_SRL_WriteCAN(Handle, Data, Size, Addr);
             break;
         default:
-            Status = -1; // Revise to `INVALID_DEV_TYPE_ERR`
+            Status = CFE_SRL_TYPE_UNSUPPORTED;
             break;
     }
 
@@ -80,7 +81,7 @@ int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t Tx
     int32 Status;
     CFE_SRL_DevType_t DevType;
 
-    if (Handle == NULL || TxData == NULL || RxData == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL || TxData == NULL || RxData == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     DevType = CFE_SRL_GetHandleDevType(Handle);
 
@@ -96,7 +97,7 @@ int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t Tx
             Status = CFE_SRL_ReadCAN(Handle, TxData, TxSize, RxData, RxSize, Timeout, Addr);
             break;
         default:
-            Status = -1; // Revise to `INVALID_DEV_TYPE_ERR`
+            Status = CFE_SRL_TYPE_UNSUPPORTED;
             break;
     }
     return Status;
@@ -113,12 +114,12 @@ int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t Tx
 int32 CFE_SRL_ApiClose(CFE_SRL_IO_Handle_t *Handle) {
     int32 Status;
 
-    if (Handle == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Status = CFE_SRL_HandleClose(Handle);
-    if (Status != CFE_SRL_OK) return Status;
+    if (Status != CFE_SUCCESS) return Status;
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 
@@ -130,7 +131,7 @@ int32 CFE_SRL_ApiClose(CFE_SRL_IO_Handle_t *Handle) {
  *
  *-----------------------------------------------------------------*/
 int32 CFE_SRL_ApiGpioSet(CFE_SRL_GPIO_Handle_t *Handle, bool Value) {
-    if (Handle == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
     
     return CFE_SRL_BasicGpioSetValue(Handle, Value);
 }
@@ -145,12 +146,12 @@ int32 CFE_SRL_ApiGpioSet(CFE_SRL_GPIO_Handle_t *Handle, bool Value) {
 int32 CFE_SRL_ApiTransactionCSP(uint8_t Node, uint8_t Port, void *TxData, int TxSize, void *RxData, int RxSize) {
     int32 Status;
 
-    if (TxData == NULL || RxData == NULL) return CFE_SRL_NULL_ERR;
+    if (TxData == NULL || RxData == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Status = CFE_SRL_TransactionCSP(Node, Port, TxData, TxSize, RxData, RxSize);
-    if (Status == -1) return Status; // Revise -1 to `CSP_TRANSACTION_ERR`
+    if (Status == CFE_SRL_TRANSACTION_ERR) return Status;
 
-    return Status;
+    return Status; // 1 or reply size
 }
 
 /*----------------------------------------------------------------

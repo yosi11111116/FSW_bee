@@ -9,7 +9,7 @@ int CFE_SRL_Open(CFE_SRL_IO_Handle_t *Handle, const char *DevName, int Option) {
     int Status;
 
     if (Handle == NULL) {
-        return CFE_SRL_NULL_ERR; // Revise to `NULL_ERROR`
+        return CFE_SRL_BAD_ARGUMENT; // Revise to `NULL_ERROR`
     }
     Status = CFE_SRL_BasicOpen(DevName, Option);
     if (Status < 0) {
@@ -20,16 +20,16 @@ int CFE_SRL_Open(CFE_SRL_IO_Handle_t *Handle, const char *DevName, int Option) {
     Handle->FD = Status;
 
     Status = CFE_SRL_SetHandleStatus(Handle, CFE_SRL_HANDLE_STATUS_FD_INIT, true);
-    if (Status != CFE_SRL_OK) return Status;
+    if (Status != CFE_SUCCESS) return Status;
 
-    return CFE_SRL_OK; // Revise to `OK`
+    return CFE_SUCCESS; // Revise to `OK`
 }
 
 int CFE_SRL_Write(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Size) {
     // int Status;
     ssize_t WriteBytes;
 
-    if (Handle == NULL || Data == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL || Data == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     if(!CFE_SRL_QueryStatus((const CFE_SRL_Global_Handle_t *)Handle, CFE_SRL_HANDLE_STATUS_FD_INIT)) {
         return CFE_SRL_NOT_OPEN_ERR;
@@ -50,14 +50,14 @@ int CFE_SRL_Write(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Size) {
         return CFE_SRL_PARTIAL_WRITE_ERR;
     }
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 int CFE_SRL_Read(CFE_SRL_IO_Handle_t *Handle, void *Data, size_t Size, uint32_t Timeout) {
     // int Status;
     ssize_t ReadBytes;
 
-    if (Handle == NULL || Data == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL || Data == NULL) return CFE_SRL_BAD_ARGUMENT;
     
     if (!CFE_SRL_QueryStatus((CFE_SRL_Global_Handle_t *)Handle, CFE_SRL_HANDLE_STATUS_FD_INIT)) {
         return CFE_SRL_NOT_OPEN_ERR;        
@@ -65,12 +65,12 @@ int CFE_SRL_Read(CFE_SRL_IO_Handle_t *Handle, void *Data, size_t Size, uint32_t 
     
     ReadBytes = CFE_SRL_BasicPollRead(Handle->FD, Data, Size, Timeout);
     
-    if (ReadBytes == CFE_SRL_TIMEOUT_ERR) {
+    if (ReadBytes == CFE_SRL_TIMEOUT) {
         Handle->RxErrCnt ++;
         Handle->__errno = errno;
-        return CFE_SRL_TIMEOUT_ERR;
+        return CFE_SRL_TIMEOUT;
     }
-    else if (ReadBytes == CFE_SRL_ERROR) {
+    else if (ReadBytes == CFE_SRL_ERR) {
         Handle->RxErrCnt ++;
         Handle->__errno = errno;
         return CFE_SRL_READ_ERR;
@@ -84,7 +84,7 @@ int CFE_SRL_Read(CFE_SRL_IO_Handle_t *Handle, void *Data, size_t Size, uint32_t 
         return CFE_SRL_PARTIAL_READ_ERR;
     }
     
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 int CFE_SRL_TransactionI2C(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t TxSize, void *RxData, size_t RxSize, uint32_t Addr) {
@@ -114,18 +114,18 @@ int CFE_SRL_TransactionI2C(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size
      * Do transaction
      */
     Status = CFE_SRL_BasicIOCTL(Handle->FD, I2C_RDWR, &Packet);
-    if (Status != CFE_SRL_OK) {
+    if (Status != CFE_SUCCESS) {
         Handle->__errno = errno;
         return CFE_SRL_READ_ERR;
     }
     
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 int CFE_SRL_Close(CFE_SRL_IO_Handle_t *Handle) {
     int Status;
 
-    if (Handle == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     if (!CFE_SRL_QueryStatus((CFE_SRL_Global_Handle_t *)Handle, CFE_SRL_HANDLE_STATUS_FD_INIT)) {
         return CFE_SRL_NOT_OPEN_ERR;
@@ -136,7 +136,7 @@ int CFE_SRL_Close(CFE_SRL_IO_Handle_t *Handle) {
         Handle->__errno = errno;    
         return CFE_SRL_CLOSE_ERR;
     }
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 
@@ -150,7 +150,7 @@ int CFE_SRL_OpenSocket(CFE_SRL_IO_Handle_t *Handle, const char *DevName) {
     Socket = socket(PF_CAN, SOCK_RAW, CAN_RAW);
     if (Socket < 0) {
         Handle->__errno = errno;
-        return -1; // Revise to `CAN_OPEN_SOCK_ERR`
+        return CFE_SRL_CAN_OPEN_SOCKET_ERR;
     }
 
     strncpy(Ifr.ifr_name, DevName, IFNAMSIZ-1);
@@ -158,7 +158,7 @@ int CFE_SRL_OpenSocket(CFE_SRL_IO_Handle_t *Handle, const char *DevName) {
     if (Status < 0) {
         Handle->__errno = errno;
         CFE_SRL_BasicClose(Socket);
-        return -1; // Revise to `CAN_SIOCGIFINDEX_ERR`
+        return CFE_SRL_CAN_SIOCGIFINDEX_ERR;
     }
 
     Addr.can_family = AF_CAN;
@@ -168,15 +168,15 @@ int CFE_SRL_OpenSocket(CFE_SRL_IO_Handle_t *Handle, const char *DevName) {
     if (Status < 0) {
         Handle->__errno = errno;
         CFE_SRL_BasicClose(Socket);
-        return -1; // Revise to `CAN_BIND_ERR`
+        return CFE_SRL_CAN_BIND_ERR;
     }
 
     Handle->FD = Socket;
     
     Status = CFE_SRL_SetHandleStatus(Handle, CFE_SRL_HANDLE_STATUS_FD_INIT, true);
-    if (Status != CFE_SRL_OK) return Status;
+    if (Status != CFE_SUCCESS) return Status;
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 /*************************************************************
@@ -187,16 +187,16 @@ int CFE_SRL_OpenSocket(CFE_SRL_IO_Handle_t *Handle, const char *DevName) {
 int CFE_SRL_GpioInit(CFE_SRL_GPIO_Handle_t *Handle, const char *Path, unsigned int Line, const char *Name, bool Default) {
     int Status;
 
-    if (Handle == NULL || Path == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL || Path == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Status = CFE_SRL_BasicGpioOpen(Handle, Path);
-    if (Status != CFE_SRL_OK) return Status;
+    if (Status != CFE_SUCCESS) return Status;
 
     Status = CFE_SRL_BasicGpioGetLine(Handle, Line);
-    if (Status != CFE_SRL_OK) return Status;
+    if (Status != CFE_SUCCESS) return Status;
 
     Status = CFE_SRL_BasicGpioSetOutput(Handle, Name, Default);
-    if (Status != CFE_SRL_OK) return Status;
+    if (Status != CFE_SUCCESS) return Status;
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }

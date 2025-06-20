@@ -131,6 +131,48 @@ char *CFE_ES_StatusToString(CFE_Status_t status, CFE_StatusString_t *status_stri
 #define CFE_TABLE_SERVICE        ((CFE_Status_t)0x0c000000) /**< @brief Table Service */
 #define CFE_TIME_SERVICE         ((CFE_Status_t)0x0e000000) /**< @brief Time Service */
 
+/**
+ * User Moule Identifiers
+ * Srv bit should be `000`
+ * Revise Mission defined code
+ * `srl` = `0b000000001`
+ * `rf` = `0b000000010`
+ */
+#define CFE_CODE_BITS        16
+#define CFE_MISSION_BITS     9
+#define CFE_SERVICE_BITS     3
+#define CFE_RESERVE_BITS     2
+#define CFE_SEVERITY_BITS    2
+
+#define CFE_MISSION_SHIFT   CFE_CODE_BITS
+#define CFE_SERVICE_SHIFT   (CFE_MISSION_SHIFT + CFE_MISSION_BITS)
+#define CFE_RESERVE_SHIFT   (CFE_SERVICE_SHIFT + CFE_SERVICE_BITS)
+#define CFE_SEVERITY_SHIFT  (CFE_RESERVE_SHIFT + CFE_RESERVE_BITS)
+   
+
+#define CFE_MISSION_DEFINED_BITMASK     ((CFE_Status_t)0x01ff0000)
+#define CFE_MISSION_ID_SERIAL              0x001
+#define CFE_MISSION_ID_RADIO               0x002
+
+/**
+ * Macro for user core status code
+ * `s`: Severity
+ * `m`: Mission defined id
+ * `c`: Specific code
+ */
+#define CFE_USER_MODULE_CODE(s, m, c)\
+        (((s)<<CFE_SEVERITY_SHIFT)|(0b00<<CFE_RESERVE_SHIFT)|\
+        (0b000<<CFE_SERVICE_SHIFT)|(((m) & 0x1FF)<<CFE_MISSION_SHIFT)|\
+        ((c) & 0xFFFF))
+
+/**
+ * User API macro for Status code generation  
+ */
+#define CFE_SERIAL_INFORMATION(n)   CFE_STATUS_C(CFE_USER_MODULE_CODE(0b01, CFE_MISSION_ID_SERIAL, (n)))
+#define CFE_SERIAL_ERROR(n)         CFE_STATUS_C(CFE_USER_MODULE_CODE(0b11, CFE_MISSION_ID_SERIAL, (n)))
+#define CFE_RADIO_INFORMATION(n)    CFE_STATUS_C(CFE_USER_MODULE_CODE(0b01, CFE_MISSION_ID_RADIO, (n)))
+#define CFE_RADIO_ERROR(n)          CFE_STATUS_C(CFE_USER_MODULE_CODE(0b11, CFE_MISSION_ID_RADIO, (n)))
+
 /*
 ************* COMMON STATUS CODES *************
 */
@@ -1364,4 +1406,90 @@ char *CFE_ES_StatusToString(CFE_Status_t status, CFE_StatusString_t *status_stri
 #define CFE_TIME_BAD_ARGUMENT ((CFE_Status_t)0xce000005)
 /**@}*/
 
+
+/*
+************* SERIAL SERVICES STATUS CODES *************
+*/
+
+/**
+ * General Err + Handle Err : 1 ~ 20
+ * UART Err : 20 ~ 29
+ * GPIO Err : 30 ~ 39
+ * CSP Err : 40 ~ 49
+ * IO Err : 50 ~ 59
+ * CAN Err : 60 ~ 69
+ * Mutex Err : 70 ~ 79
+ * Early Init Err : 80 ~ 89
+ * I2C Err : 90 ~ 99
+ */
+#define CFE_SRL_ERR                     CFE_SERIAL_ERROR(1)
+#define CFE_SRL_BAD_ARGUMENT            CFE_SERIAL_ERROR(2)
+#define CFE_SRL_TIMEOUT                 CFE_SERIAL_ERROR(3)
+#define CFE_SRL_INVALID_TYPE            CFE_SERIAL_ERROR(4)
+#define CFE_SRL_NOT_OPEN_ERR            CFE_SERIAL_ERROR(5)
+#define CFE_SRL_NOT_FOUND               CFE_SERIAL_INFORMATION(6)
+#define CFE_SRL_TYPE_UNSUPPORTED        CFE_SERIAL_INFORMATION(7)
+#define CFE_SRL_PRIOR_INIT_ERR          CFE_SERIAL_ERROR(8)
+#define CFE_SRL_HANDLE_INIT_ERR         CFE_SERIAL_ERROR(9)
+#define CFE_SRL_REF_COUNT_REMAIN        CFE_SERIAL_INFORMATION(10)
+#define CFE_SRL_NOT_FOUND_ERR           CFE_SERIAL_ERROR(11)
+#define CFE_SRL_NAME_LEN_OVERFLOW_ERR   CFE_SERIAL_ERROR(12)
+#define CFE_SRL_ALREADY_EXIST           CFE_SERIAL_INFORMATION(13)
+#define CFE_SRL_FULL_ERR                CFE_SERIAL_ERROR(14)
+#define CFE_SRL_UART_SET_ERR           CFE_SERIAL_ERROR(15)
+
+#define CFE_SRL_INVALID_BAUD            CFE_SERIAL_ERROR(20)
+#define CFE_SRL_UART_GET_ATTR_ERR       CFE_SERIAL_ERROR(21)
+#define CFE_SRL_UART_SET_ATTR_ERR       CFE_SERIAL_ERROR(22)
+#define CFE_SRL_UART_SET_ISPEED_ERR     CFE_SERIAL_ERROR(23)
+#define CFE_SRL_UART_SET_OSPEED_ERR     CFE_SERIAL_ERROR(24)
+
+#define CFE_SRL_GPIO_CHIP_OPEN_ERR      CFE_SERIAL_ERROR(30)
+#define CFE_SRL_GPIO_GET_LINE_ERR       CFE_SERIAL_ERROR(31)
+#define CFE_SRL_GPIO_SET_OUTPUT_ERR     CFE_SERIAL_ERROR(32)
+#define CFE_SRL_GPIO_SET_VALUE_ERR      CFE_SERIAL_ERROR(33)
+
+#define CFE_SRL_CSP_CAN_INIT_ERR        CFE_SERIAL_ERROR(40)
+#define CFE_SRL_CSP_I2C_INIT_ERR        CFE_SERIAL_ERROR(41)
+#define CFE_SRL_CSP_ROUTE_START_ERR     CFE_SERIAL_ERROR(42)
+#define CFE_SRL_CSP_RTABLE_SET_ERR      CFE_SERIAL_ERROR(43)
+#define CFE_SRL_CSP_INIT_ERR            CFE_SERIAL_ERROR(44)
+#define CFE_SRL_CSP_ROUTE_INIT_ERR      CFE_SERIAL_ERROR(45)
+#define CFE_SRL_TRANSACTION_ERR         CFE_SERIAL_ERROR(46)
+#define CFE_SRL_CSP_GET_CONFIG_ERR      CFE_SERIAL_ERROR(47)
+#define CFE_SRL_GET_RPARAM_ERR          CFE_SERIAL_ERROR(48)
+#define CFE_SRL_SET_RPARAM_ERR          CFE_SERIAL_ERROR(49)
+
+#define CFE_SRL_WRITE_ERR               CFE_SERIAL_ERROR(50)
+#define CFE_SRL_PARTIAL_WRITE_ERR       CFE_SERIAL_ERROR(51)
+#define CFE_SRL_READ_ERR                CFE_SERIAL_ERROR(52)
+#define CFE_SRL_PARTIAL_READ_ERR        CFE_SERIAL_ERROR(53)
+#define CFE_SRL_CLOSE_ERR               CFE_SERIAL_ERROR(54)
+#define CFE_SRL_IOCTL_ERR               CFE_SERIAL_ERROR(55)
+
+#define CFE_SRL_CAN_OPEN_SOCKET_ERR     CFE_SERIAL_ERROR(60)
+#define CFE_SRL_CAN_SIOCGIFINDEX_ERR    CFE_SERIAL_ERROR(61)
+#define CFE_SRL_CAN_BIND_ERR            CFE_SERIAL_ERROR(62)
+
+#define CFE_SRL_MUTEX_ATTR_INIT_ERR     CFE_SERIAL_ERROR(70)
+#define CFE_SRL_MUTEX_INIT_ERR          CFE_SERIAL_ERROR(71)
+#define CFE_SRL_MUTEX_LOCK_ERR          CFE_SERIAL_ERROR(72)
+#define CFE_SRL_MUTEX_UNLOCK_ERR        CFE_SERIAL_ERROR(73)
+#define CFE_SRL_MUTEX_SET_PROTOCOL_ERR  CFE_SERIAL_ERROR(74)
+#define CFE_SRL_MUTEX_DESTROY_ERR       CFE_SERIAL_ERROR(75)
+
+#define CFE_SRL_I2C0_INIT_ERR           CFE_SERIAL_ERROR(80)
+#define CFE_SRL_I2C1_INIT_ERR           CFE_SERIAL_ERROR(81)
+#define CFE_SRL_I2C2_INIT_ERR           CFE_SERIAL_ERROR(82)
+#define CFE_SRL_CAN_INIT_ERR            CFE_SERIAL_ERROR(83)
+#define CFE_SRL_UART_INIT_ERR           CFE_SERIAL_ERROR(84)
+#define CFE_SRL_RS422_INIT_ERR          CFE_SERIAL_ERROR(85)
+#define CFE_SRL_GPIO_INIT_ERR           CFE_SERIAL_ERROR(86)
+#define CFE_SRL_SOCAT_INIT_ERR          CFE_SERIAL_ERROR(87)
+
+#define CFE_SRL_I2C_ADDR_ERR            CFE_SERIAL_ERROR(88)
+       
+/*
+************* RADIO SERVICES STATUS CODES *************
+*/
 #endif /* CFE_ERROR_H */

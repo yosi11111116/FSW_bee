@@ -1,7 +1,7 @@
 #ifndef CFE_SRL_CSP_H
 #define CFE_SRL_CSP_H
 
-#include "cfe.h"
+// #include "cfe.h"
 
 #include "cfe_srl_basic.h"
 #include <gs/param/types.h>
@@ -49,6 +49,6 @@ int CFE_SRL_GetNodeConfigCSP(uint8_t Node, CFE_SRL_CSP_Node_Config_t **Config);
 int CFE_SRL_InitCSP(void);
 
 int CFE_SRL_TransactionCSP(uint8_t Node, uint8_t Port, void *TxData, int TxSize, void *RxData, int RxSize);
-int CFE_SRL_GetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param);
-int CFE_SRL_SetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param);
+int CFE_SRL_GetRparamCSP(uint8_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param);
+int CFE_SRL_SetRparamCSP(uint8_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param);
 #endif /* CFE_SRL_CSP_H */

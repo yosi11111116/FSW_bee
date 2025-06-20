@@ -17,6 +17,12 @@
 #include "cfe_srl_api_typedefs.h"
 #include "cfe_srl_mission_cfg.h"
 
+
+/// @brief Get IO Handle pointer. **Use this handle pointer to other API function**
+/// @param Index Index of Handle table (Refer enum `CFE_SRL_Handle_Indexer_t`)
+/// @return Pointer of `CFE_SRL_IO_Handle_t` object
+CFE_SRL_IO_Handle_t *CFE_SRL_ApiGetHandle(CFE_SRL_Handle_Indexer_t Index);
+
 /// @brief Get IO Handle pointer. **Use this handle pointer to other API function**
 /// @param Index Index of Handle table (Refer enum `CFE_SRL_Handle_Indexer_t`)
 /// @return Pointer of `CFE_SRL_IO_Handle_t` object
@@ -30,27 +36,31 @@ CFE_SRL_IO_Handle_t *CFE_SRL_ApiGetHandle(CFE_SRL_Handle_Indexer_t Index);
 /// @return Only `CFE_SRL_OK`(which is `0`) is success.
 int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Size, uint32_t Addr);
 
+
 /// @brief Read data from external device via various serial comm. protocol
 /// @param Handle A Pointer of SRL Handle. Distinguish character device file
 /// @param TxData Data want to transmit to external device. (It might be the specific register of device)
 /// @param TxSize Size of `TxData`
 /// @param RxData Data want to receive from external device. (It might be the specific value / result of write)
 /// @param RxSize Size of `RxData`
-/// @param Timeout Blocking time for Read
+/// @param Timeout Blocking time for Read. Unit is *millisec*
 /// @param Addr Address for external device. (I2C, CAN) If not needed, put `NULL`
 /// @return Only `CFE_SRL_OK`(which is `0`) is success.
 int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t TxSize, void *RxData, size_t RxSize, uint32_t Timeout, uint32_t Addr);
+
 
 /// @brief Close Serial Interface
 /// @param Handle A Pointer of SRL Handle. Distinguish character device file
 /// @return Only `CFE_SRL_OK`(which is `0`) is success.
 int32 CFE_SRL_ApiClose(CFE_SRL_IO_Handle_t * Handle);
 
+
 /// @brief Set specified GPIO PIN to HIGH or LOW
 /// @param Handle `CFE_SRL_GPIO_Handle_t` pointer
 /// @param Value `true` for HIGH, `false` for LOW
 /// @return Only `CFE_SRL_OK`(which is `0`) is success.
 int32 CFE_SRL_ApiGpioSet(CFE_SRL_GPIO_Handle_t *Handle, bool Value);
+
 
 /// @brief CSP Transaction API function via CSP CAN
 /// @param Node Destination Node addr
@@ -76,6 +86,7 @@ int32 CFE_SRL_ApiTransactionCSP(uint8_t Node, uint8_t Port, void *TxData, int Tx
 /// @return Only `CFE_SRL_OK`(which is `0`) is success
 int32 CFE_SRL_ApiGetRparamCSP(uint8_t Type, uint8_t Node, uint8_t TableId, uint16_t Addr, void *Param);
 
+
 /// @brief Set particluar type of parameter of CSP device
 /// @param Type Parameter type. Look up header `gs/param/rparam.h`
 /// @param Node CSP device node
@@ -84,4 +95,5 @@ int32 CFE_SRL_ApiGetRparamCSP(uint8_t Type, uint8_t Node, uint8_t TableId, uint1
 /// @param Param Pointer of buffer
 /// @return Only `CFE_SRL_OK`(which is `0`) is success
 int32 CFE_SRL_ApiSetRparamCSP(uint8_t Type, uint8_t Node, uint8_t TableId, uint16_t Addr, void *Param);
+
 #endif /* CFE_SRL_H */

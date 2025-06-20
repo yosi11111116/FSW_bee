@@ -10,17 +10,17 @@ int CFE_SRL_GlobalHandleMutexInit(void) {
     pthread_mutexattr_t Attr;
     
     Status = pthread_mutexattr_init(&Attr);
-    if (Status != 0) return CFE_SRL_MUTEX_ATTR_INIT_ERR; // Revise to `MUTEX_ATTR_INIT_ERR`
+    if (Status != 0) return CFE_SRL_MUTEX_ATTR_INIT_ERR;
 
 #if defined __USE_POSIX199506 || defined __USE_UNIX98
     Status = pthread_mutexattr_setprotocol(&Attr, PTHREAD_PRIO_INHERIT);
-    if (Status != 0) return CFE_SRL_MUTEX_SET_PROTOCOL_ERR; // Revise to `MUTEX_SET_PRTOCOL_ERROR`
+    if (Status != 0) return CFE_SRL_MUTEX_SET_PROTOCOL_ERR;
 #endif
 
     Status = pthread_mutex_init(&GlobalHandleMutex, &Attr);
-    if (Status != 0) return CFE_SRL_MUTEX_INIT_ERR; // Revise to `MUTEX_INIT_ERROR`
+    if (Status != 0) return CFE_SRL_MUTEX_INIT_ERR;
 
-    return CFE_SRL_OK; // Revise to `OK`
+    return CFE_SUCCESS; // Revise to `OK`
 }
 
 int CFE_SRL_GlobalHandleMutexLock(void) {
@@ -28,7 +28,7 @@ int CFE_SRL_GlobalHandleMutexLock(void) {
     
     Status = pthread_mutex_lock(&GlobalHandleMutex);
     
-    return Status < 0 ? CFE_SRL_MUTEX_LOCK_ERR : CFE_SRL_OK;     // Revise to `LOCK_ERR` : `OK`
+    return Status < 0 ? CFE_SRL_MUTEX_LOCK_ERR : CFE_SUCCESS;
 }
 
 int CFE_SRL_GlobalHandleMutexUnlock(void) {
@@ -36,7 +36,7 @@ int CFE_SRL_GlobalHandleMutexUnlock(void) {
 
     Status = pthread_mutex_unlock(&GlobalHandleMutex);
 
-    return Status < 0 ? CFE_SRL_MUTEX_UNLOCK_ERR : CFE_SRL_OK;     // Revise to `UNLOCK_ERR` : `OK`
+    return Status < 0 ? CFE_SRL_MUTEX_UNLOCK_ERR : CFE_SUCCESS;     // Revise to `UNLOCK_ERR` : `OK`
 }
 
 int CFE_SRL_SetHandleMutexID(CFE_SRL_IO_Handle_t *Handle, uint8_t MutexID) {
@@ -47,14 +47,14 @@ int CFE_SRL_SetHandleMutexID(CFE_SRL_IO_Handle_t *Handle, uint8_t MutexID) {
 
     Entry->MutexID = MutexID;
     
-    return CFE_SRL_OK; // Revise to `OK`
+    return CFE_SUCCESS; // Revise to `OK`
 }
 
 int CFE_SRL_HandleMutexInit(CFE_SRL_IO_Handle_t *Handle, uint8_t MutexID) {
     int Status;
     pthread_mutexattr_t Attr;
 
-    if (Handle == NULL) return CFE_SRL_NULL_ERR; // Revise to `NULL_ERROR`
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT; // Revise to `NULL_ERROR`
 
     if (MutexID > CFE_SRL_GNRL_DEVICE_NUM) {
         OS_printf("cFE SRL Handle Mutex Init Error. Mutex ID %u is NOT effective.\n", MutexID);
@@ -82,15 +82,15 @@ int CFE_SRL_HandleMutexInit(CFE_SRL_IO_Handle_t *Handle, uint8_t MutexID) {
     // Set Status to `MUTEX_INIT`
 
     Status = CFE_SRL_SetHandleStatus(Handle, CFE_SRL_HANDLE_STATUS_MUTEX_INIT, true);
-    if (Status != CFE_SRL_OK) return Status;
+    if (Status != CFE_SUCCESS) return Status;
 
-    return CFE_SRL_OK; // Revise to `OK`
+    return CFE_SUCCESS; // Revise to `OK`
 }
 
 int CFE_SRL_MutexLock(CFE_SRL_IO_Handle_t *Handle) {
     int Status;
     
-    if (Handle == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     const CFE_SRL_Global_Handle_t *Entry = (CFE_SRL_Global_Handle_t *)Handle;
 
@@ -102,13 +102,13 @@ int CFE_SRL_MutexLock(CFE_SRL_IO_Handle_t *Handle) {
         return CFE_SRL_MUTEX_LOCK_ERR;
     }
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
 }
 
 int CFE_SRL_MutexUnlock(CFE_SRL_IO_Handle_t *Handle) {
     int Status;
 
-    if (Handle == NULL) return CFE_SRL_NULL_ERR;
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     const CFE_SRL_Global_Handle_t *Entry = (CFE_SRL_Global_Handle_t *)Handle;
 
@@ -120,5 +120,24 @@ int CFE_SRL_MutexUnlock(CFE_SRL_IO_Handle_t *Handle) {
         return CFE_SRL_MUTEX_UNLOCK_ERR;
     }
 
-    return CFE_SRL_OK;
+    return CFE_SUCCESS;
+}
+
+int CFE_SRL_MutexDestroy(CFE_SRL_IO_Handle_t *Handle) {
+    int Status;
+
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
+
+    const CFE_SRL_Global_Handle_t *Entry = (CFE_SRL_Global_Handle_t *)Handle;
+
+    if (IOMutex[Entry->MutexID].Isinit == false) return CFE_SUCCESS;
+    else {
+        Status = pthread_mutex_destroy(&IOMutex[Entry->MutexID].Mutex);
+        if (Status < 0) {
+            Handle->__errno = errno;
+            return CFE_SRL_MUTEX_INIT_ERR;
+        }
+        IOMutex[Entry->MutexID].Isinit = false;
+        return CFE_SUCCESS;
+    }
 }

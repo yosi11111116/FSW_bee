@@ -25,6 +25,9 @@
 #include </usr/include/gpiod.h>
 #include "cfe_srl_eventids.h"
 
+#include "cfe_srl_api_typedefs.h"
+#include "cfe_srl_mission_cfg.h"
+
 // #define CFE_SRL_GLOBAL_HANDLE_NUM   20
 // #define CFE_SRL_DEVICE_TABLE_NUM    20
 
@@ -33,15 +36,6 @@
 // #define CFE_SRL_HANDLE_NAME_LENGTH  16
 
 // #define CFE_SRL_TOT_GPIO_NUM        5
-
-typedef enum {
-    SRL_DEVTYPE_I2C = 1,
-    SRL_DEVTYPE_SPI,
-    SRL_DEVTYPE_CAN,
-    SRL_DEVTYPE_UART,
-    SRL_DEVTYPE_RS422
-} CFE_SRL_DevType_t;
-
 
 // typedef struct {
 //     int FD;
@@ -52,6 +46,15 @@ typedef enum {
 //     uint32_t RxErrCnt;
 // } CFE_SRL_IO_Handle_t;
 
+typedef enum {
+    SRL_DEVTYPE_I2C = 1,
+    SRL_DEVTYPE_SPI,
+    SRL_DEVTYPE_CAN,
+    SRL_DEVTYPE_UART,
+    SRL_DEVTYPE_RS422
+} CFE_SRL_DevType_t;
+
+
 typedef struct {
     CFE_SRL_IO_Handle_t Handle;
     char Name[CFE_SRL_HANDLE_NAME_LENGTH];      // Like "UANT_I2C"
@@ -60,12 +63,6 @@ typedef struct {
     uint8_t MutexID;
     uint8_t Status;
 } CFE_SRL_Global_Handle_t;
-
-typedef struct {
-    char DevName[CFE_SRL_HANDLE_NAME_LENGTH];
-    int FD;
-    int RefCount;
-} CFE_SRL_Open_Device_Handle_t;
 
 typedef enum {
     CFE_SRL_HANDLE_STATUS_NONE = 0x00,
@@ -95,7 +92,7 @@ ssize_t CFE_SRL_BasicPollRead(int FD, void *Data, size_t Size, uint32_t Timeout)
 
 CFE_SRL_DevType_t CFE_SRL_GetHandleDevType(CFE_SRL_IO_Handle_t *Handle);
 
-bool CFE_SRL_QueryStatus(const CFE_SRL_Global_Handle_t *Entry, uint8_t Query);
+bool CFE_SRL_QueryStatus(const CFE_SRL_Global_Handle_t *Entry, CFE_SRL_Handle_Status_t Query);
 
 int CFE_SRL_SetHandleStatus(CFE_SRL_IO_Handle_t *Handle, uint8_t Label, bool Set);
 

@@ -80,6 +80,7 @@ SET(SPACECRAFT_ID 0x42)
 # of the CFE core executable on every target.  These can be used to amend
 # or override parts of the CFE core on a mission-specific basis.
 list(APPEND MISSION_CORE_MODULES srl)
+list(APPEND MISSION_CORE_MODULES rf)
 
 # The "MISSION_GLOBAL_APPLIST" is a set of apps/libs that will be built
 # for every defined target.  These are built as dynamic modules
