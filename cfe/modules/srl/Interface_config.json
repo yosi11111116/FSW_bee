@@ -2,7 +2,7 @@
     "interfaces" : [
         {
             "type": "i2c",
-            "ready": true,
+            "ready": false,
             "name": "I2C0",
             "DevName": "/dev/i2c-0",
             "MutexID": 0
@@ -16,7 +16,7 @@
         },
         {
             "type": "i2c",
-            "ready": true,
+            "ready": false,
             "name": "I2C2",
             "DevName": "/dev/i2c-2",
             "MutexID": 1
@@ -39,7 +39,7 @@
         },
         {
             "type": "gpio", 
-            "ready": true, 
+            "ready": false, 
             "name":"STX_EN",
             "DevName": "/dev/gpiochip2",
             "line": 3,
@@ -48,14 +48,14 @@
         },
         {
             "type": "uart",
-            "ready": false,
+            "ready": true,
             "name": "socat",
-            "DevName": "/dev/pts/5",
+            "DevName": "/dev/pts/1",
             "baudrate": 115200
         },
         {
             "type": "spi",
-            "ready": true,
+            "ready": false,
             "name": "SPI0",
             "DevName": "/dev/spidev0.0",
             "mode": 0,

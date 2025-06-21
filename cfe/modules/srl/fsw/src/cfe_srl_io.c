@@ -64,7 +64,7 @@ int CFE_SRL_Read(CFE_SRL_IO_Handle_t *Handle, void *Data, size_t Size, uint32_t 
     }
     
     ReadBytes = CFE_SRL_BasicPollRead(Handle->FD, Data, Size, Timeout);
-    
+
     if (ReadBytes == CFE_SRL_TIMEOUT) {
         Handle->RxErrCnt ++;
         Handle->__errno = errno;
