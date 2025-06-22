@@ -69,7 +69,9 @@
         "stop_token": "c",
         "sample_app_cmds.h": "c",
         "cfe_config.h": "c",
-        "functional": "c"
+        "functional": "c",
+        "sc_msgids.h": "c",
+        "sc_events.h": "c"
     },
     "cmake.sourceDirectory": "/home/hj/Documents/FSW/tools/elf2cfetbl"
 }
