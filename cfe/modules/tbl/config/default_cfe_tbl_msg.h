@@ -18,7 +18,7 @@
 
 /**
  * @file
- *   Specification for the CFE Event Services (CFE_TBL) command and telemetry
+ *   Specification for the CFE Table Services (CFE_TBL) command and telemetry
  *   message data types.
  *
  * This is a compatibility header for the "cfe_tbl_msg.h" file that has
