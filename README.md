@@ -2,6 +2,12 @@
 - Author: Kweon HyeokJin
 
 # Notes
+## V2.0
+- Revise SRL module
+  - Add SRL Task for TCTM
+- Add LC, HS, FM apps
+
+## V1.0
 - Unlink several cFS submodule (e.g. cfe, ci_lab, sch_lab)
 > That means these modules managed as same repository
 - Add some submodules. **CSP**, **toolchain**, **libgpiod**
