@@ -48,8 +48,8 @@ CFE_SRL_GPIO_Handle_t *CFE_SRL_ApiGetGpioHandle(CFE_SRL_GPIO_Indexer_t Index) {
  *
  *-----------------------------------------------------------------*/
 int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
-    if (Handle == NULL || Handle->Func.TxFunc == NULL ||Params->TxData == NULL) return CFE_SRL_BAD_ARGUMENT;
-
+    if (Handle == NULL || Handle->Func.TxFunc == NULL ||Params->TxData == NULL){ printf("Bad Argument Error: 0x%08X\n", CFE_SRL_BAD_ARGUMENT);return CFE_SRL_BAD_ARGUMENT;}
+    printf("not argu err\n");
     return Handle->Func.TxFunc(Handle, Params);
 }
 
@@ -63,8 +63,8 @@ int32 CFE_SRL_ApiWrite(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) 
  *-----------------------------------------------------------------*/
 int32 CFE_SRL_ApiRead(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
     if (Handle == NULL || Handle->Func.RxFunc == NULL || 
-        Params->TxData == NULL || Params->RxData == NULL) return CFE_SRL_BAD_ARGUMENT;
-
+        Params->TxData == NULL || Params->RxData == NULL){printf("Bad Argument Error: 0x%08X\n", CFE_SRL_BAD_ARGUMENT); return CFE_SRL_BAD_ARGUMENT;}
+    printf("not argu err\n");
     return Handle->Func.RxFunc(Handle, Params);
 }
 

@@ -21,3 +21,8 @@
 #../../../../cfe/fsw/cfe-core/src/inc/cfe_evs_msg.h
 #../../../../cfe/fsw/cfe-core/src/inc/cfe_sb_msg.h
 #../../../../cfe/fsw/cfe-core/src/inc/cfe_tbl_msg.h
+../../../../apps/stx/config/default_stx_fcncodes.h
+../../../../apps/stx/config/default_stx_msg.h
+../../../../apps/stx/config/default_stx_msgdefs.h
+../../../../apps/stx/config/default_stx_msgstruct.h
+#../../../../apps/stx/device/inc/esup.h

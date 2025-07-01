@@ -10,7 +10,8 @@
 CFE_SRL_IO_Handle_t *Handles[CFE_SRL_GNRL_DEVICE_NUM];
 /**************************************************
  * Index of Each device
- * 0 : SOCAT Handle
+ * 0 : UART Handle
+ * 1 : SOCAT Handle
  **************************************************/
 
 CFE_SRL_GPIO_Handle_t GPIO[CFE_SRL_TOT_GPIO_NUM];
@@ -32,6 +33,16 @@ int32 CFE_SRL_EarlyInit(void) {
 	 * Serial Comm. Init
  	 * Only `ready == true` interface is initialized
 	 **************************************************/
+	/* UART Init */
+	Status = CFE_SRL_HandleInit(&Handles[CFE_SRL_UART_HANDLE_INDEXER], "UART", "/dev/ttyS0", SRL_DEVTYPE_UART, CFE_SRL_UART_HANDLE_INDEXER, 115200, 0);
+	Handles[CFE_SRL_UART_HANDLE_INDEXER]->Func.TxFunc = CFE_SRL_WriteGenericUART;
+	Handles[CFE_SRL_UART_HANDLE_INDEXER]->Func.RxFunc = CFE_SRL_ReadGenericUART;
+	if (Status != CFE_SUCCESS) {
+		CFE_ES_WriteToSysLog("%s: UART Initialization failed! RC=%d\n", __func__, Status);
+		return CFE_SRL_UART_INIT_ERR;
+	}
+	CFE_ES_WriteToSysLog("%s: UART Initialized. FD=%d || DevName=%s\n", __func__, Handles[CFE_SRL_UART_HANDLE_INDEXER]->FD, ((CFE_SRL_Global_Handle_t *)Handles[CFE_SRL_UART_HANDLE_INDEXER])->DevName);
+
 	/* socat Init */
 	Status = CFE_SRL_HandleInit(&Handles[CFE_SRL_SOCAT_HANDLE_INDEXER], "socat", "/dev/pts/4", SRL_DEVTYPE_UART, CFE_SRL_SOCAT_HANDLE_INDEXER, 115200, 0);
 	Handles[CFE_SRL_SOCAT_HANDLE_INDEXER]->Func.TxFunc = CFE_SRL_WriteGenericUART;

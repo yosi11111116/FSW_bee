@@ -23,7 +23,7 @@
         },
         {
             "type": "uart",
-            "ready": false,
+            "ready": true,
             "name": "UART",
             "DevName": "/dev/ttyS0",
             "MutexID": 2,

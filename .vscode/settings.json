@@ -25,7 +25,11 @@
         "int-ll64.h": "c",
         "cfe_srl_api_typedefs.h": "c",
         "cfe_srl_eventids.h": "c",
-        "cfe_srl_mission_cfg.h": "c"
+        "cfe_srl_mission_cfg.h": "c",
+        "cfe_mission_cfg.h": "c",
+        "cfe_srl_interface_cfg.h": "c",
+        "default_cfe_srl_mission_cfg.h": "c",
+        "default_cfe_srl_extern_typedefs.h": "c"
     },
     "cmake.sourceDirectory": "/home/hj/Documents/FSW/tools/elf2cfetbl"
 }

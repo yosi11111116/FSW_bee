@@ -5,6 +5,7 @@
 #include "cfe_srl_interface_cfg.h"
 
 typedef enum {
+	CFE_SRL_UART_HANDLE_INDEXER,
 	CFE_SRL_SOCAT_HANDLE_INDEXER,
 } CFE_SRL_Handle_Indexer_t;
 

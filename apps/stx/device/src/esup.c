@@ -7,17 +7,18 @@
 #include <rs485.h>
 #include <crc32.h>
 #include <byteswap.h>
-#include "cfe_srl_handle.h"
+#include "cfe_srl.h"
+#include "default_cfe_srl_mission_cfg.h"
+#include "default_cfe_srl_extern_typedefs.h"
 
-
-extern CFE_SRL_RS422_Handle_t *RS422;
+// CFE_SRL_RS422_Handle_t *RS422;
 uint32_t Timeout = 100;
 
 uint16_t modid_forscan = 0;
 
 // ESUP Encoder: ESUP packet을 만드는 과정
 static uint16_t ESUP_Encoder(uint16_t comm_stt, uint16_t comm, uint16_t type, void * data, uint16_t length, uint16_t padlen, ESUP_Packet_t * packet)
-{
+{   
     if(!packet)
         return 0;
 
@@ -95,10 +96,15 @@ static uint16_t ESUP_Decoder(uint8_t * data, uint16_t length, ESUP_Packet_t * pa
    4. Read한 내용을 ESUP packet 형식에 맞게 출력 (ESUP_Decoder)
 */
 uint16_t ESUP(uint16_t comm_stt, uint16_t comm, uint16_t type, void * txdata, uint16_t txlength, void * rxdata, uint16_t rxlength)
-{
+{   
+
+    CFE_SRL_IO_Handle_t *Handle = CFE_SRL_ApiGetHandle(CFE_SRL_UART_HANDLE_INDEXER);
+
     ESUP_Packet_t * packet = NULL;  // XTX에 write할 ESUP packet을 가리키는 포인터
     ESUP_Packet_t * reply = NULL;   // XTX로부터 read한 데이터를 저장할 ESUP packet을 가리키는 포인터
     uint16_t retu16 = 0;
+    CFE_SRL_IO_Param_t Params;
+
     // int CFE_SRL_OK = 0;             //cfe/modeule/srl에서 참고
     int retd32 = 0;
 
@@ -140,14 +146,19 @@ uint16_t ESUP(uint16_t comm_stt, uint16_t comm, uint16_t type, void * txdata, ui
     
     // XTX의 응답을 RS485 통신으로 read
     // retd32 = RS485_READ(readbuf, sizeof(readbuf));
-    retd32 = CFE_SRL_ApiRead(RS422, packet, lencal, rxdata, rxlength, Timeout, 0);
+    Params.TxData = packet;
+    Params.TxSize = lencal;
+    Params.RxData = rxdata;
+    Params.RxSize = rxlength;
+    Params.Timeout = Timeout;
+
+    retd32 = CFE_SRL_ApiRead(Handle, &Params);
     if(retd32 <= 0)  // retd32: read한 데이터 길이
     {
         printf("RS485 has no reply.\n");
         printf("%d\n", retd32); // 또는 필요한 형식에 따라
         return retu16;
     }
-    
     
     // Read한 내용을 ESUP packet 형식에 맞게 출력
     retu16 = ESUP_Decoder((uint8_t*)rxdata, (uint16_t)retd32, reply);
