@@ -31,9 +31,9 @@
         },
         {
             "type": "uart",
-            "ready": false,
+            "ready": true,
             "name": "RS422",
-            "DevName": "/dev/ttyS1",
+            "DevName": "/dev/ttyS2",
             "MutexID": 3,
             "baudrate": 250000
         },
@@ -48,7 +48,7 @@
         },
         {
             "type": "uart",
-            "ready": true,
+            "ready": false,
             "name": "socat",
             "DevName": "/dev/pts/1",
             "baudrate": 115200

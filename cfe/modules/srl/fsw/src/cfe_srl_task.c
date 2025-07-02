@@ -68,7 +68,7 @@ void CFE_SRL_TaskMain(void) {
         **  use the RunLoop call.
         */
         CFE_ES_IncrementTaskCounter();
-        OS_printf("SRL TaskMain Loop\n");
+        // OS_printf("SRL TaskMain Loop\n");
         /*
         ** Performance Time Stamp Exit
         */
@@ -264,7 +264,7 @@ int32 CFE_SRL_SendHkCmd(const CFE_SRL_SendHkCmd_t *data) {
     CFE_SB_TimeStampMsg(CFE_MSG_PTR(CFE_SRL_TaskData.HKTlmMsg.TelemetryHeader));
     CFE_SB_TransmitMsg(CFE_MSG_PTR(CFE_SRL_TaskData.HKTlmMsg.TelemetryHeader), true);
 
-    CFE_EVS_SendEvent(114, CFE_EVS_EventType_INFORMATION, "SRL Send HK Cmd Received.");
+    // CFE_EVS_SendEvent(114, CFE_EVS_EventType_INFORMATION, "SRL Send HK Cmd Received.");
 
     return CFE_SUCCESS;
 }
