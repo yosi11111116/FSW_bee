@@ -13,9 +13,9 @@
 # } CFE_ES_StartAppCmd_Payload_t;
 
 # get
-# ./cmdUtil --pktid=0x1875 --cmdcode=30 --endian=LE
+./cmdUtil --pktid=0x1875 --cmdcode=30 --endian=LE
 
 # set
-./cmdUtil --pktid=0x1874 --cmdcode=10 --endian=LE --uint16=0x0001 --int16=1
+# ./cmdUtil --pktid=0x1874 --cmdcode=10 --endian=LE --uint16=1
 
 

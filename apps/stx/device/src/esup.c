@@ -78,6 +78,7 @@ static uint16_t ESUP_Decoder(uint8_t * data, uint16_t length, ESUP_Packet_t * pa
             printf("\n");
     }
 
+
     /*
     // DIR Command 후 GetResult Command의 데이터 영역 해독 (파일 개수, 파일 이름, 파일 크기)  
     if (packet->header.com_stt == ESUP_INSIG && packet->header.command == FILESYS_CC_DIR && packet->header.type == FILESYS_TP_NA && packet->DCP[0] == 0)
@@ -124,6 +125,8 @@ uint16_t ESUP(uint16_t comm_stt, uint16_t comm, uint16_t type, void * txdata, ui
     
     modid_forscan = 0x2008;  // Module ID
     
+
+
     // XTX에 write할 ESUP packet 생성
     retu16 = ESUP_Encoder(comm_stt, comm, type, txdata, txlength, padlen, packet);
     if(!retu16)  // retu16: 생성한 ESUP packet의 전체 길이
@@ -132,24 +135,18 @@ uint16_t ESUP(uint16_t comm_stt, uint16_t comm, uint16_t type, void * txdata, ui
         return retu16;
     }
     
-    // // 생성한 ESUP packet을 RS422 통신으로 XTX에 write
-    // retd32 = CFE_SRL_ApiWrite(RS422, packet, lencal, 0);
-    // if(retd32 != CFE_SRL_OK)  // retd32: write한 데이터 길이
-    // {
-    //     printf("RS485 Write Failed!\n");
-    //     return retu16;
-    // }
-    // printf("\nESUP_write success via RS485.\n");
-    // printf("--------------------\n");
-    // usleep(30000);
-     
-    
+
+    // // 실험실험
+    // ESUP_Decoder((uint8_t*)packet, lencal, reply);
+
     // XTX의 응답을 RS485 통신으로 read
     // retd32 = RS485_READ(readbuf, sizeof(readbuf));
+    uint16_t rx_total_len = sizeof(ESUP_Header_t) + rxlength + 4;
+
     Params.TxData = packet;
     Params.TxSize = lencal;
     Params.RxData = rxdata;
-    Params.RxSize = rxlength;
+    Params.RxSize = rx_total_len;
     Params.Timeout = Timeout;
 
     retd32 = CFE_SRL_ApiRead(Handle, &Params);
@@ -160,8 +157,8 @@ uint16_t ESUP(uint16_t comm_stt, uint16_t comm, uint16_t type, void * txdata, ui
         return retu16;
     }
     
-    // Read한 내용을 ESUP packet 형식에 맞게 출력
-    retu16 = ESUP_Decoder((uint8_t*)rxdata, (uint16_t)retd32, reply);
+    // Read한 내용을 ESUP packet 형식에 맞게 출력 (확인용????)
+    retu16 = ESUP_Decoder((uint8_t*)rxdata, rx_total_len, reply);
     if(!retu16)  // retu16: 받은 ESUP packet에서 데이터 영역의 길이
     {
         printf("ESUP Read Failed!\n");

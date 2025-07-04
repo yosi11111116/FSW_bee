@@ -3,7 +3,7 @@
 ## cFS Ground System Info
 
 The GroundSystem directory contains the new Ground System project for the cFS, that incorporates the main window to launch commands and telemetry systems, and other utilities like FDL/FUL and FT managers to send and receive files. The main window runs alongside the Routing Service (`RoutingService.py`). The Routing Service handles all incoming data and publishes (PUB/SUB) the data to specific ZeroMQ channels so that the different ground system utilities can receive (subscribe) only the desired data.
-
+      
 This ground system supports commanding and receiving telemetry from multiple spacecraft using UDP.
 
 The Ground System contains the main window that lets you launch the different utilities.

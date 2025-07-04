@@ -44,6 +44,7 @@
 ** They are each given their own type name matching the command name, which
 ** allows them to change independently in the future without changing the prototype
 ** of the handler function
+*  gs -> obc
 */
 typedef struct
 {
@@ -70,13 +71,85 @@ typedef struct
 {
     CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
     STX_Set_Payload_t Payload;
-    // STX_Set_Payload_t ackPayload;
 } STX_Set_t;
 
 typedef struct
 {
     CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
-//    STX_Get_Payload_t ackPayload;
+    STX_Set1_Payload_t Payload;
+} STX_Set1_t;
+
+typedef struct
+{
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+    STX_Set2_Payload_t Payload;
+} STX_Set2_t;
+
+typedef struct
+{
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+    STX_Set3_Payload_t Payload;
+} STX_Set3_t;
+
+typedef struct
+{
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+    STX_Set4_Payload_t Payload;
+} STX_Set4_t;
+
+typedef struct
+{
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+    STX_Set5_Payload_t Payload;
+} STX_Set5_t;
+// typedef struct
+// {
+//     CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+//     STX_FS_DIR_Payload_t Payload;
+// } STX_FS_DIR_t;
+typedef struct
+{
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+    STX_DELFILE_Payload_t Payload;
+} STX_DELFILE_t;
+
+typedef struct
+{
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+    STX_CREATEFILE_Payload_t Payload;
+} STX_CREATEFILE_t;
+
+typedef struct
+{
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+    STX_WRITEFILE_Payload_t Payload;
+} STX_WRITEFILE_t;
+
+typedef struct
+{
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+    STX_OPENFILE_Payload_t Payload;
+} STX_OPENFILE_t;
+
+typedef struct
+{
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+    STX_READFILE_Payload_t Payload;
+} STX_READFILE_t;
+
+typedef struct
+{
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+    STX_SENDFILE_Payload_t Payload;
+} STX_SENDFILE_t;
+
+
+
+
+
+typedef struct
+{
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
 } STX_Get_t;
 
 typedef struct
@@ -86,6 +159,8 @@ typedef struct
 /*************************************************************************/
 /*
 ** Type definition
+*   obc <-> app
+*
 */
 
 typedef struct

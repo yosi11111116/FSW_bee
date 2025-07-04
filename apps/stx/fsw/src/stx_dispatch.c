@@ -115,55 +115,66 @@ void STX_Basic_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
 /* set */
 void STX_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
     CFE_MSG_FcnCode_t CommandCode = 0;
-
+    
+    int8_t rxlength_g = 1;
     int16_t status;
     uint16_t command;
     uint16_t type;
 
-    CFE_MSG_GetFcnCode(&SBBufPtr->Msg, &CommandCode);
-    const STX_Set_t *cmd = (const STX_Set_t *)SBBufPtr;
-
-    void *txdata = (void *)&cmd->Payload.data;
-    uint16_t txlength = (uint16_t)cmd->Payload.length;
-
     void *rxdata = (void *)&STX_Data.SetTlm.Payload.data;
-    uint16_t rxlength = (uint16_t)STX_Data.SetTlm.Payload.length;
+    uint8_t rxlength = 1;
+
+    CFE_MSG_GetFcnCode(&SBBufPtr->Msg, &CommandCode);
     
     switch (CommandCode)
     {
         case STX_SET_SYMBOLRATE:
-            if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
+            if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set1_t)))
             {
+
+                const STX_Set1_t *cmd = (const STX_Set1_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload.data;
+                uint16_t txlength = sizeof(cmd->Payload.data);
+
                 status = ESUP_INSIG;
                 command = CONFIG_CC_SET;
                 type = CONFIG_TP_SYMBOLRATE;
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
         case STX_SET_TRANSMITPW:
-            if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
+            if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set1_t)))
             {
+
+                const STX_Set1_t *cmd = (const STX_Set1_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload.data;
+                uint16_t txlength = sizeof(cmd->Payload.data);
+
                 status = ESUP_INSIG;
                 command = CONFIG_CC_SET;
                 type = CONFIG_TP_TRANSMITPW;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
 
         case STX_SET_CENTERFREQ:
-            if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
+            if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set2_t)))
             {
+                const STX_Set2_t *cmd = (const STX_Set2_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload.data;
+                uint16_t txlength = sizeof(cmd->Payload.data);
+
                 status = ESUP_INSIG;
                 command = CONFIG_CC_SET;
                 type = CONFIG_TP_CENTERFREQ;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -171,12 +182,16 @@ void STX_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
         case STX_SET_MODCOD:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+                const STX_Set1_t *cmd = (const STX_Set1_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload.data;
+                uint16_t txlength = sizeof(cmd->Payload.data);
+
                 status = ESUP_INSIG;
                 command = CONFIG_CC_SET;
                 type = CONFIG_TP_MODCOD;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -184,12 +199,16 @@ void STX_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
         case STX_SET_ROLLOFF:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+                const STX_Set1_t *cmd = (const STX_Set1_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload.data;
+                uint16_t txlength = sizeof(cmd->Payload.data);
+
                 status = ESUP_INSIG;
                 command = CONFIG_CC_SET;
                 type = CONFIG_TP_ROLLOFF;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -197,24 +216,32 @@ void STX_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
         case STX_SET_PILOTSIG:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+                const STX_Set1_t *cmd = (const STX_Set1_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload.data;
+                uint16_t txlength = sizeof(cmd->Payload.data);
+
                 status = ESUP_INSIG;
                 command = CONFIG_CC_SET;
                 type = CONFIG_TP_PILOTSIG;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
         case STX_SET_FECFRAMESZ:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+                const STX_Set1_t *cmd = (const STX_Set1_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload.data;
+                uint16_t txlength = sizeof(cmd->Payload.data);
+
                 status = ESUP_INSIG;
                 command = CONFIG_CC_SET;
                 type = CONFIG_TP_FECFRAMESZ;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             
             }
             break;
@@ -222,60 +249,82 @@ void STX_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
         case STX_SET_PRETX_DELAY:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+                const STX_Set3_t *cmd = (const STX_Set3_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload.data;
+                uint16_t txlength = sizeof(cmd->Payload.data);
+
                 status = ESUP_INSIG;
                 command = CONFIG_CC_SET;
                 type = CONFIG_TP_PRETXSTUFFDEL;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
         case STX_SET_ALL_PRAMETERS:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+
+                const STX_Set4_t *cmd = (const STX_Set4_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload;
+                uint16_t txlength = sizeof(cmd->Payload);
+
                 status = ESUP_INSIG;
                 command = CONFIG_CC_SET;
                 type = CONFIG_TP_ALLPARAM;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
         case STX_SET_RS485BAUD:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+                const STX_Set1_t *cmd = (const STX_Set1_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload.data;
+                uint16_t txlength = sizeof(cmd->Payload.data);
+
                 status = ESUP_INSIG;
                 command = CONFIG_CC_SET;
                 type = CONFIG_TP_RS485BAUD;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
         case STX_SET_MODULATOR_DATA_INTERFACE:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+                const STX_Set5_t *cmd = (const STX_Set5_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload;
+                uint16_t txlength = sizeof(cmd->Payload);
+
                 status = ESUP_INSIG;
                 command = CONFIG_CC_SET;
                 type = CONFIG_TP_MODULATORDTIFC;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
         case STX_FILESYS_CC_DIR:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+
+                // const STX_FS_DIR_t *cmd = (const STX_FS_DIR_t *)SBBufPtr;
+                // void *txdata = (void *)&cmd->Payload;
+                // uint16_t txlength = sizeof(cmd->Payload);
+
                 status = ESUP_INSIG;
                 command = FILESYS_CC_DIR;
                 type = FILESYS_TP_NA;
 
-                ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, command, type, NULL, 0, rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -286,20 +335,25 @@ void STX_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
                 command = FILESYS_CC_DIRNEXT;
                 type = FILESYS_TP_NA;
 
-                ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, command, type, NULL, 0, rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
         case STX_FILESYS_CC_DELFILE:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+                const STX_DELFILE_t *cmd = (const STX_DELFILE_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload.filename;
+                uint16_t txlength = sizeof(cmd->Payload.filename);
+                // uint16_t txlength = strnlen(cmd->Payload.filename, STX_MAX_FILENAME_LEN) + 1;
+
                 status = ESUP_INSIG;
                 command = FILESYS_CC_DELFILE;
                 type = FILESYS_TP_NA;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -310,106 +364,126 @@ void STX_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
                 command = FILESYS_CC_DELALLFILE;
                 type = FILESYS_TP_NA;
 
-                ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, command, type, NULL, 0, rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
         case STX_FILESYS_CC_CREATEFILE:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+                const STX_CREATEFILE_t *cmd = (const STX_CREATEFILE_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload.filename;
+                uint16_t txlength = sizeof(cmd->Payload.filename);
+
                 status = ESUP_INSIG;
                 command = FILESYS_CC_CREATEFILE;
                 type = FILESYS_TP_NA;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
         case STX_FILESYS_CC_WRITEFILE:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+                const STX_WRITEFILE_t *cmd = (const STX_WRITEFILE_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload;
+                uint16_t txlength = sizeof(cmd->Payload);
+
                 status = ESUP_INSIG;
                 command = FILESYS_CC_WRITEFILE;
                 type = FILESYS_TP_NA;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
         case STX_FILESYS_CC_OPENFILE:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+                const STX_OPENFILE_t *cmd = (const STX_OPENFILE_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload;
+                uint16_t txlength = sizeof(cmd->Payload);
+
                 status = ESUP_INSIG;
                 command = FILESYS_CC_OPENFILE;
                 type = FILESYS_TP_NA;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
         case STX_FILESYS_CC_READFILE:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+                const STX_READFILE_t *cmd = (const STX_READFILE_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload.file_handle;
+                uint16_t txlength = sizeof(cmd->Payload.file_handle);
+
                 status = ESUP_INSIG;
                 command = FILESYS_CC_READFILE;
                 type = FILESYS_TP_NA;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
         case STX_FILESYS_CC_SENDFILE:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
+                const STX_SENDFILE_t *cmd = (const STX_SENDFILE_t *)SBBufPtr;
+                void *txdata = (void *)&cmd->Payload.filename;
+                uint16_t txlength = sizeof(cmd->Payload.filename);
+
                 status = ESUP_INSIG;
                 command = FILESYS_CC_SENDFILE;
                 type = FILESYS_TP_SENDFILE;
 
                 ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
-        case STX_FILESYS_CC_SENDFILEPI:
-            if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
-            {
-                status = ESUP_INSIG;
-                command = FILESYS_CC_SENDFILE;
-                type = FILESYS_TP_SENDFILEPI;
+        // case STX_FILESYS_CC_SENDFILEPI:
+        //     if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
+        //     {
+        //         status = ESUP_INSIG;
+        //         command = FILESYS_CC_SENDFILE;
+        //         type = FILESYS_TP_SENDFILEPI;
 
-                ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
-            }
-            break;
+        //         ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
+        //         ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
+        //     }
+        //     break;
 
-        case STX_FILESYS_CC_SENDFILERTI:
-            if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
-            {
-                status = ESUP_INSIG;
-                command = FILESYS_CC_SENDFILE;
-                type = FILESYS_TP_SENDFILERTI;
+        // case STX_FILESYS_CC_SENDFILERTI:
+        //     if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
+        //     {
+        //         status = ESUP_INSIG;
+        //         command = FILESYS_CC_SENDFILE;
+        //         type = FILESYS_TP_SENDFILERTI;
 
-                ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
-            }
-            break;
+        //         ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
+        //         ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
+        //     }
+        //     break;
 
-        case STX_FILESYS_CC_SENDFILEAI:
-            if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
-            {
-                status = ESUP_INSIG;
-                command = FILESYS_CC_SENDFILE;
-                type = FILESYS_TP_SENDFILEAI;
+        // case STX_FILESYS_CC_SENDFILEAI:
+        //     if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
+        //     {
+        //         status = ESUP_INSIG;
+        //         command = FILESYS_CC_SENDFILE;
+        //         type = FILESYS_TP_SENDFILEAI;
 
-                ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
-            }
-            break;
+        //         ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
+        //         ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
+        //     }
+        //     break;
 
         case STX_SYSCONF_CC_TRANSMITMODE:
             if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
@@ -418,8 +492,8 @@ void STX_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
                 command = SYSCONF_CC_TRANSMITMODE;
                 type = SYSCONF_TP_NA;
 
-                ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, command, type, NULL, 0, rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -430,8 +504,8 @@ void STX_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
                 command = SYSCONF_CC_IDLEMODE;
                 type = SYSCONF_TP_NA;
 
-                ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, command, type, NULL, 0, rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -442,8 +516,8 @@ void STX_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
                 command = SYSCONF_CC_SAFESHUTDOWN;
                 type = SYSCONF_TP_NA;
 
-                ESUP(status, command, type, txdata, txlength, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, command, type, NULL, 0, rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -478,7 +552,7 @@ void STX_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
                               CommandCode);
             break;
 
-        STX_Data.SetTlm.Payload.length = sizeof(STX_Data.SetTlm.Payload.data);
+
         CFE_SB_TimeStampMsg(CFE_MSG_PTR(STX_Data.SetTlm.TelemetryHeader));
         CFE_SB_TransmitMsg(CFE_MSG_PTR(STX_Data.SetTlm.TelemetryHeader), true);
     }
@@ -488,15 +562,14 @@ void STX_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
 void STX_ProcessRequestedTelemetry(const CFE_SB_Buffer_t *SBBufPtr)
 {
     CFE_MSG_FcnCode_t CommandCode = 0;
-
+    uint8_t rxlength_g =1;
+    uint8_t rxlength;
     int16_t status;
     uint16_t command;
     uint16_t type;
 
     CFE_MSG_GetFcnCode(&SBBufPtr->Msg, &CommandCode);
-    
-    void *rxdata = (void *)&STX_Data.GetTlm.Payload.data;
-    uint16_t rxlength = (uint16_t)STX_Data.GetTlm.Payload.length;
+    void *rxdata = (void *)&STX_Data.SetTlm.Payload.data;
 
     /*
     ** Process SAMPLE app ground commands
@@ -509,8 +582,9 @@ void STX_ProcessRequestedTelemetry(const CFE_SB_Buffer_t *SBBufPtr)
                 status = ESUP_INSIG;
                 command = CONFIG_CC_GET;
                 type = CONFIG_TP_SYMBOLRATE;
+                rxlength = 1;
                 ESUP(status, command, type, NULL, 0, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -519,8 +593,9 @@ void STX_ProcessRequestedTelemetry(const CFE_SB_Buffer_t *SBBufPtr)
                 status = ESUP_INSIG;
                 command = CONFIG_CC_GET;
                 type = CONFIG_TP_TRANSMITPW;
+                rxlength = 1;
                 ESUP(status, command, type, NULL, 0, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -529,8 +604,9 @@ void STX_ProcessRequestedTelemetry(const CFE_SB_Buffer_t *SBBufPtr)
                 status = ESUP_INSIG;
                 command = CONFIG_CC_GET;
                 type = CONFIG_TP_CENTERFREQ;
+                rxlength = 4;
                 ESUP(status, command, type, NULL, 0, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -539,8 +615,9 @@ void STX_ProcessRequestedTelemetry(const CFE_SB_Buffer_t *SBBufPtr)
                 status = ESUP_INSIG;
                 command = CONFIG_CC_GET;
                 type = CONFIG_TP_MODCOD;
+                rxlength = 1;
                 ESUP(status, command, type, NULL, 0, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -549,8 +626,9 @@ void STX_ProcessRequestedTelemetry(const CFE_SB_Buffer_t *SBBufPtr)
                 status = ESUP_INSIG;
                 command = CONFIG_CC_GET;
                 type = CONFIG_TP_ROLLOFF;
+                rxlength = 1;
                 ESUP(status, command, type, NULL, 0, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -559,8 +637,9 @@ void STX_ProcessRequestedTelemetry(const CFE_SB_Buffer_t *SBBufPtr)
                 status = ESUP_INSIG;
                 command = CONFIG_CC_GET;
                 type = CONFIG_TP_PILOTSIG;
+                rxlength = 1;
                 ESUP(status, command, type, NULL, 0, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -569,8 +648,9 @@ void STX_ProcessRequestedTelemetry(const CFE_SB_Buffer_t *SBBufPtr)
                 status = ESUP_INSIG;
                 command = CONFIG_CC_GET;
                 type = CONFIG_TP_FECFRAMESZ;
+                rxlength = 1;
                 ESUP(status, command, type, NULL, 0, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -579,8 +659,9 @@ void STX_ProcessRequestedTelemetry(const CFE_SB_Buffer_t *SBBufPtr)
                 status = ESUP_INSIG;
                 command = CONFIG_CC_GET;
                 type = CONFIG_TP_PRETXSTUFFDEL;
+                rxlength = 2;
                 ESUP(status, command, type, NULL, 0, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -589,8 +670,9 @@ void STX_ProcessRequestedTelemetry(const CFE_SB_Buffer_t *SBBufPtr)
                 status = ESUP_INSIG;
                 command = CONFIG_CC_GET;
                 type = CONFIG_TP_ALLPARAM;
+                rxlength = 12;
                 ESUP(status, command, type, NULL, 0, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -599,8 +681,9 @@ void STX_ProcessRequestedTelemetry(const CFE_SB_Buffer_t *SBBufPtr)
                 status = ESUP_INSIG;
                 command = CONFIG_CC_GET;
                 type = STATUS_TP_SIMPLE_REPORT;
+                rxlength = 12;
                 ESUP(status, command, type, NULL, 0, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -609,8 +692,9 @@ void STX_ProcessRequestedTelemetry(const CFE_SB_Buffer_t *SBBufPtr)
                 status = ESUP_INSIG;
                 command = CONFIG_CC_GET;
                 type = CONFIG_TP_MODULATORDTIFC;
+                rxlength = 2;
                 ESUP(status, command, type, NULL, 0, rxdata, rxlength);
-                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength);
+                ESUP(status, GETRES_CC_GETRES, command, &type, sizeof(type), rxdata, rxlength_g);
             }
             break;
 
@@ -618,7 +702,7 @@ void STX_ProcessRequestedTelemetry(const CFE_SB_Buffer_t *SBBufPtr)
         default:
             CFE_EVS_SendEvent(STX_CC_ERR_EID, CFE_EVS_EventType_ERROR, "Invalid ground command code: CC = %d", CommandCode);
             break;
-        STX_Data.SetTlm.Payload.length = sizeof(STX_Data.GetTlm.Payload.data);
+
         CFE_SB_TimeStampMsg(CFE_MSG_PTR(STX_Data.GetTlm.TelemetryHeader));
         CFE_SB_TransmitMsg(CFE_MSG_PTR(STX_Data.GetTlm.TelemetryHeader), true);
 
