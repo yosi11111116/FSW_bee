@@ -29,7 +29,8 @@
         "cfe_mission_cfg.h": "c",
         "cfe_srl_interface_cfg.h": "c",
         "default_cfe_srl_mission_cfg.h": "c",
-        "default_cfe_srl_extern_typedefs.h": "c"
+        "default_cfe_srl_extern_typedefs.h": "c",
+        "stx_mission_cfg.h": "c"
     },
     "cmake.sourceDirectory": "/home/hj/Documents/FSW/tools/elf2cfetbl"
 }
