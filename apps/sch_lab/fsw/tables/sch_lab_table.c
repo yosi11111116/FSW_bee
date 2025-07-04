@@ -72,6 +72,8 @@ SCH_LAB_ScheduleTable_t SCH_LAB_ScheduleTable = {
         {CFE_SB_MSGID_WRAP_VALUE(CFE_TIME_SEND_HK_MID), 98, 0},
         {CFE_SB_MSGID_WRAP_VALUE(CFE_SB_SEND_HK_MID), 97, 0},
         {CFE_SB_MSGID_WRAP_VALUE(CFE_EVS_SEND_HK_MID), 96, 0},
+        {CFE_SB_MSGID_WRAP_VALUE(CFE_SRL_SEND_HK_MID), 96, 0},
+        // {CFE_SB_MSGID_WRAP_VALUE(SAMPLE_APP_CMD_MID), 100, 2},
 
 /* Example of including additional open source apps  */
 #ifdef HAVE_CI_LAB

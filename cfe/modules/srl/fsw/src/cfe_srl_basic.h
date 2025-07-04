@@ -11,14 +11,20 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <stdbool.h>
 #include <errno.h>
+<<<<<<< HEAD
 //#include <termios.h>
 #include <sys/ioctl.h>
 #include <asm/termbits.h>
 //#include <linux/termios.h> // termios2
 //#include <asm/ioctl.h>
+=======
+#include <sys/ioctl.h>
+#include <asm/termbits.h>
+>>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
 #include <linux/i2c-dev.h>
 #include <linux/i2c.h>
 #include "cfe.h"
@@ -28,6 +34,7 @@
 #include "cfe_srl_api_typedefs.h"
 #include "cfe_srl_mission_cfg.h"
 
+<<<<<<< HEAD
 // #define CFE_SRL_GLOBAL_HANDLE_NUM   20
 // #define CFE_SRL_DEVICE_TABLE_NUM    20
 
@@ -37,6 +44,8 @@
 
 // #define CFE_SRL_TOT_GPIO_NUM        5
 
+=======
+>>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
 typedef enum {
     SRL_DEVTYPE_I2C = 1,
     SRL_DEVTYPE_SPI,
@@ -79,11 +88,6 @@ typedef enum {
 } CFE_SRL_Handle_Status_t;
 
 
-// typedef struct {
-//     struct gpiod_chip *Chip;
-//     struct gpiod_line *Line;
-// } CFE_SRL_GPIO_Handle_t;
-
 int CFE_SRL_BasicOpen(const char *Device, int Option);
 
 ssize_t CFE_SRL_BasicWrite(int FD, const void *Data, size_t Size);
@@ -102,14 +106,20 @@ bool CFE_SRL_QueryStatus(const CFE_SRL_Global_Handle_t *Entry, uint8_t Query);
 
 int CFE_SRL_SetHandleStatus(CFE_SRL_IO_Handle_t *Handle, uint8_t Label, bool Set);
 
+
 /*************************************************************
  *  Basic UART/RS422 Function
  *************************************************************/
+<<<<<<< HEAD
 speed_t CFE_SRL_GetBaudFromInt(uint32_t BaudRate);
 
 int CFE_SRL_GetTermiosAttr(CFE_SRL_IO_Handle_t *Handle, struct termios *Termios);
 int CFE_SRL_SetTermiosAttr(CFE_SRL_IO_Handle_t *Handle, struct termios *Termios);
+=======
+>>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
 int CFE_SRL_BasicSetUART(CFE_SRL_IO_Handle_t *Handle, uint32_t BaudRate);
+int CFE_SRL_ChangeBaudUART(CFE_SRL_IO_Handle_t *Handle, uint32_t BaudRate);
+
 
 int CFE_SRL_BasicSetUART2(CFE_SRL_IO_Handle_t *Handle, uint32_t BaudRate);
 int CFE_SRL_ChangeBaudUART(CFE_SRL_IO_Handle_t *Handle, uint32_t BaudRate);

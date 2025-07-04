@@ -7,7 +7,6 @@
  *         Do NOT use this function directly in App layer
  ************************************************************************/
 #include <fcntl.h>
-#include <unistd.h>
 
 #include <sys/select.h>
 
@@ -55,6 +54,15 @@ ssize_t CFE_SRL_BasicPollRead(int FD, void *Data, size_t Size, uint32_t Timeout)
     int Ret = poll(FDS, 1, Timeout);
 
     if (Ret > 0 && FDS[0].revents & POLLIN) { // When Read Event Occured,
+        // int BufSize = 0;
+        // uint8_t Iteration = 0;
+        // while (BufSize < Size) {
+        //     if (Iteration > 5) break;
+        //     OS_TaskDelay(1);
+        //     ioctl(FD, FIONREAD, &BufSize);
+        //     OS_printf("Received Data : %d\n",BufSize);
+        //     Iteration++;
+        // }
         return CFE_SRL_BasicRead(FD, Data, Size); // Read.
     }
     else if (Ret == 0) {
@@ -93,6 +101,7 @@ int CFE_SRL_SetHandleStatus(CFE_SRL_IO_Handle_t *Handle, uint8_t Label, bool Set
  *  Basic UART/RS422 Function
  * 
  *************************************************************/
+<<<<<<< HEAD
 /**
  * Deprecated
  */ 
@@ -170,6 +179,8 @@ int CFE_SRL_SetTermiosAttr(CFE_SRL_IO_Handle_t *Handle, struct termios *Termios)
  * Deprecated
  * Module use `CFE_SRL_BasicSetUART2` instead
  */
+=======
+>>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
 int CFE_SRL_BasicSetUART(CFE_SRL_IO_Handle_t *Handle, uint32_t BaudRate) {
     // int Status;
     // struct termios Termios;
@@ -261,7 +272,41 @@ int CFE_SRL_BasicSetUART2(CFE_SRL_IO_Handle_t *Handle, uint32_t BaudRate) {
 
     // Output Flag
     Termios2.c_oflag &= ~(OPOST); // Post Process off
+<<<<<<< HEAD
 
+=======
+
+    Status = CFE_SRL_BasicIOCTL(Handle->FD, TCSETS2, &Termios2);
+    if (Status == -1) {
+        Handle->__errno = errno;
+        return -1; // Revise to `TCSETS2_ERR`
+    }
+    return CFE_SUCCESS;
+}
+
+/**
+ * Change UART Baud rate
+ */
+int CFE_SRL_ChangeBaudUART(CFE_SRL_IO_Handle_t *Handle, uint32_t BaudRate) {
+    int Status;
+    struct termios2 Termios2;
+
+    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
+
+    Status = CFE_SRL_BasicIOCTL(Handle->FD, TCGETS2, &Termios2);
+    if (Status == -1) {
+        Handle->__errno = errno;
+        return -1; // Revise to `TCGETS2_ERR`
+    }
+    /**
+     * Baud Rate Setting
+     */
+    Termios2.c_cflag &= ~CBAUD;
+    Termios2.c_cflag |= BOTHER;
+    Termios2.c_ispeed = BaudRate;
+    Termios2.c_ospeed = BaudRate;
+
+>>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
     Status = CFE_SRL_BasicIOCTL(Handle->FD, TCSETS2, &Termios2);
     if (Status == -1) {
         Handle->__errno = errno;

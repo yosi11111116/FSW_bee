@@ -10,8 +10,6 @@
 
 #define CSP_CAN_DEV_NAME            "can0"
 
-#define CSP_NODE_FIX_MASK           5
-
 #define CSP_TIMEOUT(x)              (x)*1000
 
 /**
@@ -46,7 +44,7 @@ typedef struct {
 int CFE_SRL_RouteInitCSP(void);
 int CFE_SRL_NodeConfigCSP(uint8_t Node, uint8_t Priority, uint32_t Timeout, uint32_t Options);
 int CFE_SRL_GetNodeConfigCSP(uint8_t Node, CFE_SRL_CSP_Node_Config_t **Config);
-int CFE_SRL_InitCSP(void);
+int32 CFE_SRL_InitCSP(void);
 
 int CFE_SRL_TransactionCSP(uint8_t Node, uint8_t Port, void *TxData, int TxSize, void *RxData, int RxSize);
 int CFE_SRL_GetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t TableId, uint16_t Addr, void *Param);

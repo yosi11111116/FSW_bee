@@ -7,12 +7,17 @@
 # such as generating header files
 #
 ###########################################################
-
+message(STATUS "srl mission_build start")
 # The list of header files that control the SRL configuration
 set(SRL_MISSION_CONFIG_FILE_LIST
-  cfe_srl_extern_typedefs.h
-  cfe_srl_interface_cfg.h
   cfe_srl_mission_cfg.h
+  cfe_srl_interface_cfg.h
+  cfe_srl_extern_typedefs.h
+  cfe_srl_fcncodes.h
+  cfe_srl_msgdefs.h
+  cfe_srl_msg.h
+  cfe_srl_msgstruct.h
+  cfe_srl_topicids.h
 )
 
 # Create wrappers around the all the config header files
@@ -30,3 +35,5 @@ foreach(SRL_CFGFILE ${SRL_MISSION_CONFIG_FILE_LIST})
     ${DEFAULT_SOURCE}
   )
 endforeach()
+
+message(STATUS "srl mission_build end")

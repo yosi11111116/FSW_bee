@@ -24,8 +24,13 @@ CFE_SRL_CSP_Node_Config_t *NodeConfig[32] = {0}; // Not mandatory
 int CFE_SRL_RouteInitCSP(void) {
     int Status;
 
+<<<<<<< HEAD
     csp_iface_t *InterfaceCAN;
     // csp_iface_t *InterfaceI2C;
+=======
+    csp_iface_t *InterfaceCAN = NULL;
+    // csp_iface_t *InterfaceI2C = NULL;
+>>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
 
     Status = csp_route_start_task(CSP_TASK_STACK_SIZE(1), GS_THREAD_PRIORITY_HIGH);
     if (Status != CSP_ERR_NONE) {
@@ -45,18 +50,24 @@ int CFE_SRL_RouteInitCSP(void) {
     /**
      * CSP I2C Initialization
      */
+<<<<<<< HEAD
     // Status = gs_csp_i2c_init2(0, 0, "BPX", false, &InterfaceI2C); // I2C/CSP ADDR `0x07`
     // if (Status != GS_OK) {
     //     CFE_ES_WriteToSysLog("%s: CSP I2C Init failed! NO RC", __func__);
     //     return -1; // Revise to `CSP_I2C_INIT_ERR`
     // }
 
+=======
+    // Status = gs_csp_i2c_init2(0, 0, "p31u", false, &InterfaceI2C);
+    // if (Status != GS_OK) return CFE_SRL_CSP_I2C_INIT_ERR;
+>>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
 
     /**
      * CSP Routing Table setting
      */
 
     /* CAN */
+<<<<<<< HEAD
     Status = csp_rtable_set(CSP_NODE_ACU, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NO_VIA_ADDRESS);
     if (Status != CSP_ERR_NONE) return CFE_SRL_CSP_RTABLE_SET_ERR;
 
@@ -67,17 +78,30 @@ int CFE_SRL_RouteInitCSP(void) {
     if (Status != CSP_ERR_NONE) return CFE_SRL_CSP_RTABLE_SET_ERR;
 
     Status = csp_rtable_set(CSP_NODE_UTRX, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NO_VIA_ADDRESS);
+=======
+    Status = csp_rtable_set(CSP_NODE_UTRX, CSP_ID_HOST_SIZE, InterfaceCAN, CSP_NO_VIA_ADDRESS);
     if (Status != CSP_ERR_NONE) return CFE_SRL_CSP_RTABLE_SET_ERR;
 
-    Status = csp_rtable_set(CSP_NODE_GS_KISS, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NODE_UTRX);
+    Status = csp_rtable_set(CSP_NODE_STRX, CSP_ID_HOST_SIZE, InterfaceCAN, CSP_NO_VIA_ADDRESS);
+>>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
     if (Status != CSP_ERR_NONE) return CFE_SRL_CSP_RTABLE_SET_ERR;
 
-    Status = csp_rtable_set(CSP_NODE_GSTRX, CSP_NODE_FIX_MASK, InterfaceCAN, CSP_NODE_UTRX);
+    Status = csp_rtable_set(CSP_NODE_GS_KISS, CSP_ID_HOST_SIZE, InterfaceCAN, CSP_NODE_UTRX);
     if (Status != CSP_ERR_NONE) return CFE_SRL_CSP_RTABLE_SET_ERR;
+
+    Status = csp_rtable_set(CSP_NODE_GSTRX, CSP_ID_HOST_SIZE, InterfaceCAN, CSP_NODE_UTRX);
+    if (Status != CSP_ERR_NONE) return CFE_SRL_CSP_RTABLE_SET_ERR;
+<<<<<<< HEAD
     /* I2C - BPX */
     // Status = csp_rtable_set(CSP_NODE_BAT, CSP_NODE_FIX_MASK, InterfaceI2C, CSP_NO_VIA_ADDRESS);
     // if (Status != CSP_ERR_NONE) return CFE_SRL_CSP_RTABLE_SET_ERR;
     
+=======
+    /* I2C */
+    // Status = csp_rtable_set(CSP_NODE_EPS, CSP_ID_HOST_SIZE, InterfaceI2C, CSP_NO_VIA_ADDRESS);
+    // if (Status != CSP_ERR_NONE) return CFE_SRL_CSP_RTABLE_SET_ERR;
+
+>>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
     return CFE_SUCCESS;
 }
 
@@ -182,8 +206,13 @@ int CFE_SRL_GetRparamCSP(gs_param_type_t Type, uint8_t Node, gs_param_table_id_t
     if (Param == NULL) return CFE_SRL_BAD_ARGUMENT;
 
     Status = CFE_SRL_GetNodeConfigCSP(Node, &Config);
+<<<<<<< HEAD
     if (Status != CFE_SUCCESS) return Status;
 
+=======
+    if (Status != CFE_SUCCESS) return CFE_SRL_CSP_GET_CONFIG_ERR;
+    OS_printf("Priority: %u || Timeout: %u\n", Config->Priority, Config->Timeout);
+>>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
     switch(Type) {
         case GS_PARAM_UINT8:    
             Status = gs_rparam_get_uint8(Node, TableId, Addr, GS_RPARAM_MAGIC_CHECKSUM, Config->Timeout, (uint8_t *)Param);

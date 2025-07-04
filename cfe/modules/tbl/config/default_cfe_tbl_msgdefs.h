@@ -18,7 +18,7 @@
 
 /**
  * @file
- *   Specification for the CFE Event Services (CFE_TBL) command and telemetry
+ *   Specification for the CFE Table Services (CFE_TBL) command and telemetry
  *   message constant definitions.
  *
  *  For CFE_TBL this is only the function/command code definitions
