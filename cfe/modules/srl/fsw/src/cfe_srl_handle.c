@@ -5,10 +5,7 @@
 
 #include <fcntl.h>
 
-<<<<<<< HEAD
-=======
 #include "cfe_srl_priv.h"
->>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
 static CFE_SRL_Global_Handle_t GlobalHandle[CFE_SRL_GLOBAL_HANDLE_NUM] = {0};
 
 
@@ -81,8 +78,6 @@ int CFE_SRL_GlobalHandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, con
 void CFE_SRL_SetTRxFunction(CFE_SRL_IO_Handle_t *Handle) {
     const CFE_SRL_Global_Handle_t *Entry = (CFE_SRL_Global_Handle_t *)Handle;
 
-<<<<<<< HEAD
-=======
     switch (Entry->DevType)
     {
     case SRL_DEVTYPE_I2C:
@@ -112,7 +107,6 @@ void CFE_SRL_SetTRxFunction(CFE_SRL_IO_Handle_t *Handle) {
 }
 
 
->>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
 int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const char *Devname, uint8_t DevType, uint8_t MutexID, uint32_t BaudRate, uint8_t SPIMode) {
     int Status;
     CFE_SRL_IO_Handle_t *TempHandle;
@@ -164,12 +158,9 @@ int CFE_SRL_HandleInit(CFE_SRL_IO_Handle_t **Handle, const char *Name, const cha
     if (DevType == SRL_DEVTYPE_SPI) {
         Status = CFE_SRL_SetSPI(*Handle, SPIMode, BaudRate, 8);
     }
-<<<<<<< HEAD
-=======
 
     CFE_SRL_SetTRxFunction(*Handle);
 
->>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
     return CFE_SUCCESS;
 }
 

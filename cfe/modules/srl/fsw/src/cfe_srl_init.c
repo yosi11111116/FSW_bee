@@ -10,12 +10,8 @@
 CFE_SRL_IO_Handle_t *Handles[CFE_SRL_GNRL_DEVICE_NUM];
 /**************************************************
  * Index of Each device
-<<<<<<< HEAD
  * 0 : UART Handle
- * 1 : SOCAT Handle
-=======
- * 0 : RS422 Handle
->>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
+ * 1 : RS422 Handle
  **************************************************/
 
 CFE_SRL_GPIO_Handle_t GPIO[CFE_SRL_TOT_GPIO_NUM];
@@ -37,27 +33,14 @@ int32 CFE_SRL_EarlyInit(void) {
 	 * Serial Comm. Init
  	 * Only `ready == true` interface is initialized
 	 **************************************************/
-<<<<<<< HEAD
 	/* UART Init */
 	Status = CFE_SRL_HandleInit(&Handles[CFE_SRL_UART_HANDLE_INDEXER], "UART", "/dev/ttyS0", SRL_DEVTYPE_UART, CFE_SRL_UART_HANDLE_INDEXER, 115200, 0);
-	Handles[CFE_SRL_UART_HANDLE_INDEXER]->Func.TxFunc = CFE_SRL_WriteGenericUART;
-	Handles[CFE_SRL_UART_HANDLE_INDEXER]->Func.RxFunc = CFE_SRL_ReadGenericUART;
 	if (Status != CFE_SUCCESS) {
 		CFE_ES_WriteToSysLog("%s: UART Initialization failed! RC=%d\n", __func__, Status);
 		return CFE_SRL_UART_INIT_ERR;
 	}
 	CFE_ES_WriteToSysLog("%s: UART Initialized. FD=%d || DevName=%s\n", __func__, Handles[CFE_SRL_UART_HANDLE_INDEXER]->FD, ((CFE_SRL_Global_Handle_t *)Handles[CFE_SRL_UART_HANDLE_INDEXER])->DevName);
 
-	/* socat Init */
-	Status = CFE_SRL_HandleInit(&Handles[CFE_SRL_SOCAT_HANDLE_INDEXER], "socat", "/dev/pts/4", SRL_DEVTYPE_UART, CFE_SRL_SOCAT_HANDLE_INDEXER, 115200, 0);
-	Handles[CFE_SRL_SOCAT_HANDLE_INDEXER]->Func.TxFunc = CFE_SRL_WriteGenericUART;
-	Handles[CFE_SRL_SOCAT_HANDLE_INDEXER]->Func.RxFunc = CFE_SRL_ReadGenericUART;
-	if (Status != CFE_SUCCESS) {
-		CFE_ES_WriteToSysLog("%s: socat Initialization failed! RC=%d\n", __func__, Status);
-		return CFE_SRL_SOCAT_INIT_ERR;
-	}
-	CFE_ES_WriteToSysLog("%s: socat Initialized. FD=%d || DevName=%s\n", __func__, Handles[CFE_SRL_SOCAT_HANDLE_INDEXER]->FD, ((CFE_SRL_Global_Handle_t *)Handles[CFE_SRL_SOCAT_HANDLE_INDEXER])->DevName);
-=======
 	/* RS422 Init */
 	Status = CFE_SRL_HandleInit(&Handles[CFE_SRL_RS422_HANDLE_INDEXER], "RS422", "/dev/ttyS2", SRL_DEVTYPE_UART, CFE_SRL_RS422_HANDLE_INDEXER, 250000, 0);
 	if (Status != CFE_SUCCESS) {
@@ -65,7 +48,6 @@ int32 CFE_SRL_EarlyInit(void) {
 		return CFE_SRL_RS422_INIT_ERR;
 	}
 	CFE_ES_WriteToSysLog("%s: RS422 Initialized. FD=%d || DevName=%s\n", __func__, Handles[CFE_SRL_RS422_HANDLE_INDEXER]->FD, ((CFE_SRL_Global_Handle_t *)Handles[CFE_SRL_RS422_HANDLE_INDEXER])->DevName);
->>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
 
 return CFE_SUCCESS;
 }

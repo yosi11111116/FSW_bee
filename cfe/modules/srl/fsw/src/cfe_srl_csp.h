@@ -25,6 +25,7 @@ typedef enum {
     CSP_NODE_OBC = 6,
     CSP_NODE_BAT = 7, // BPX - I2C
     CSP_NODE_GS_KISS = 8,
+    CSP_NODE_STRX = 9,
     CSP_NODE_GSTRX = 20,
     // CSP_NODE_ADCS = 24
 } CFE_SRL_CSP_Node_t;

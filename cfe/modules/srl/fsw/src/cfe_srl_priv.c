@@ -88,10 +88,6 @@ int32 CFE_SRL_WriteGenericI2C(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *P
     return CFE_SRL_WriteI2C(Handle, Params->TxData, Params->TxSize, Params->Addr);
 }
 
-int32 CFE_SRL_WriteGenericI2C(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
-    return CFE_SRL_WriteI2C(Handle, Params->TxData, Params->TxSize, Params->Addr);
-}
-
 /*----------------------------------------------------------------
  *
  * Implemented per public API
@@ -129,9 +125,6 @@ int32 CFE_SRL_WriteGenericUART(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *
     return CFE_SRL_WriteUART(Handle, Params->TxData, Params->TxSize);
 }
 
-int32 CFE_SRL_WriteGenericUART(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
-    return CFE_SRL_WriteUART(Handle, Params->TxData, Params->TxSize);
-}
 
 /*----------------------------------------------------------------
  *
@@ -168,11 +161,7 @@ int32 CFE_SRL_WriteCAN(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Siz
 
         // Write
         Status = CFE_SRL_Write(Handle, &Frame, sizeof(Frame));
-<<<<<<< HEAD
-        if (Status != CFE_SUCCESS) return Status;
-=======
         if (Status != CFE_SUCCESS) goto error;
->>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
 
         TotBytes += WrBytes;
     }
@@ -237,51 +226,6 @@ int32 CFE_SRL_WriteGenericSPI(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *P
     return CFE_SRL_WriteSPI(Handle, Params->TxData, Params->TxSize);
 }
 
-int32 CFE_SRL_WriteGenericCAN(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
-    return CFE_SRL_WriteCAN(Handle, Params->TxData, Params->TxSize, Params->Addr);
-}
-
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
-int32 CFE_SRL_WriteSPI(CFE_SRL_IO_Handle_t *Handle, const void *Data, size_t Size) {
-    int32 Status;
-    CFE_SRL_DevType_t DevType;
-    struct spi_ioc_transfer Xfer[1];
-    memset(Xfer, 0, sizeof(Xfer));
-
-    if (Handle == NULL || Data == NULL) return CFE_SRL_BAD_ARGUMENT;
-
-    DevType = CFE_SRL_GetHandleDevType(Handle);
-    if (DevType != SRL_DEVTYPE_SPI) return CFE_SRL_INVALID_TYPE;
-
-    //Mutex Lock
-    Status = CFE_SRL_MutexLock(Handle);
-    if (Status != CFE_SUCCESS) return Status;
-
-    Xfer[0].tx_buf = (uint64_t)(uintptr_t)Data;
-    Xfer[0].len = Size;
-
-    Status = ioctl(Handle->FD, SPI_IOC_MESSAGE(1), Xfer);
-    if (Status < 0) {
-        Handle->__errno = errno;
-        return CFE_SRL_IOCTL_ERR;
-    }
-
-    // Mutex Unlock
-    Status = CFE_SRL_MutexUnlock(Handle);
-    if (Status != CFE_SUCCESS) return Status;
-
-    return CFE_SUCCESS;
-}
-int32 CFE_SRL_WriteGenericSPI(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
-    return CFE_SRL_WriteSPI(Handle, Params->TxData, Params->TxSize);
-}
-
-
 /**
  * Private Read function
  */
@@ -324,10 +268,6 @@ int32 CFE_SRL_ReadGenericI2C(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Pa
     return CFE_SRL_ReadI2C(Handle, Params->TxData, Params->TxSize, Params->RxData, Params->RxSize, Params->Addr);
 }
 
-int32 CFE_SRL_ReadGenericI2C(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
-    return CFE_SRL_ReadI2C(Handle, Params->TxData, Params->TxSize, Params->RxData, Params->RxSize, Params->Addr);
-}
-
 /*----------------------------------------------------------------
  *
  * Implemented per public API
@@ -349,11 +289,7 @@ int32 CFE_SRL_ReadUART(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t T
 
     // Write
     Status = CFE_SRL_Write(Handle, TxData, TxSize);
-<<<<<<< HEAD
-    if (Status != CFE_SUCCESS) return Status;
-=======
     if (Status != CFE_SUCCESS) goto error;
->>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
     
     // Poll Read
     Status = CFE_SRL_Read(Handle, RxData, RxSize, Timeout);
@@ -404,11 +340,7 @@ int32 CFE_SRL_ReadCAN(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t Tx
         RdBytes = (RxSize - TotBytes >= CAN_MAX_DLEN) ? CAN_MAX_DLEN : (RxSize - TotBytes);
         // Poll Read
         Status = CFE_SRL_Read(Handle, &Frame, sizeof(struct can_frame), Timeout);
-<<<<<<< HEAD
-        if (Status != CFE_SUCCESS) return Status;
-=======
         if (Status != CFE_SUCCESS) goto error;
->>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
 
         uint32_t RxID = 0;
         if (Frame.can_id & CAN_EFF_FLAG) RxID = Frame.can_id & CAN_EFF_MASK;
@@ -427,13 +359,10 @@ int32 CFE_SRL_ReadCAN(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t Tx
     if (Status != CFE_SUCCESS) goto error;
 
     return CFE_SUCCESS;
-<<<<<<< HEAD
-=======
 
 error:
     CFE_SRL_MutexUnlock(Handle);
     return Status;
->>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
 }
 
 int32 CFE_SRL_ReadGenericCAN(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {
@@ -469,15 +398,6 @@ int32 CFE_SRL_ReadSPI(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t Tx
     Status = ioctl(Handle->FD, SPI_IOC_MESSAGE(2), Xfer);
     if (Status < 0) {
         Handle->__errno = errno;
-<<<<<<< HEAD
-        return CFE_SRL_IOCTL_ERR;
-    }
-
-    Status = CFE_SRL_MutexUnlock(Handle);
-    if (Status != CFE_SUCCESS) return Status;
-
-    return CFE_SUCCESS;
-=======
         Status = CFE_SRL_IOCTL_ERR;
         goto error;
     }
@@ -490,7 +410,6 @@ int32 CFE_SRL_ReadSPI(CFE_SRL_IO_Handle_t *Handle, const void *TxData, size_t Tx
 error:
     CFE_SRL_MutexUnlock(Handle);
     return Status;
->>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
 }
 
 int32 CFE_SRL_ReadGenericSPI(CFE_SRL_IO_Handle_t *Handle, CFE_SRL_IO_Param_t *Params) {

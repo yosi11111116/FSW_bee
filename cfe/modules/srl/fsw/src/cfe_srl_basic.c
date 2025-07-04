@@ -101,86 +101,6 @@ int CFE_SRL_SetHandleStatus(CFE_SRL_IO_Handle_t *Handle, uint8_t Label, bool Set
  *  Basic UART/RS422 Function
  * 
  *************************************************************/
-<<<<<<< HEAD
-/**
- * Deprecated
- */ 
-speed_t CFE_SRL_GetBaudFromInt(uint32_t BaudRate) {
-    switch(BaudRate) {
-    //     case 2400: return B2400;
-    //     case 4800: return B4800;
-    //     case 9600: return B9600;
-    //     case 19200: return B19200;
-    //     case 38400: return B38400;
-    //     case 57600: return B576000;
-    //     case 115200: return B115200;
-    //     case 230400: return B230400;
-    //     case 460800: return B460800;
-    //     case 500000: return B500000;
-
-        default:
-            return -1;
-    }
-}
-
-/**
- * Deprecated
- */
-int CFE_SRL_GetTermiosAttr(CFE_SRL_IO_Handle_t *Handle, struct termios *Termios) {
-    // int Status;
-    // CFE_SRL_DevType_t DevType;
-
-    // if (Handle == NULL || Termios == NULL ) return CFE_SRL_BAD_ARGUMENT;
-
-    // DevType = CFE_SRL_GetHandleDevType(Handle);
-    // if (DevType != SRL_DEVTYPE_UART && DevType != SRL_DEVTYPE_RS422) {
-    //     return -1; // Revise to `TYPE_NOT_UART`
-    // }
-
-    // Status = CFE_SRL_QueryStatus((CFE_SRL_Global_Handle_t *)Handle, CFE_SRL_HANDLE_STATUS_FD_INIT);
-    // if (Status == false) return CFE_SRL_NOT_OPEN_ERR;
-
-    // Status = tcgetattr(Handle->FD, Termios);
-    // if (Status < 0) {
-    //     Handle->__errno = errno;
-    //     return -1; // Revise to `UART_GET_ATTR_ERR`
-    // }
-
-    return CFE_SUCCESS;
-}
-
-/**
- * Deprecated
- */
-int CFE_SRL_SetTermiosAttr(CFE_SRL_IO_Handle_t *Handle, struct termios *Termios) {
-    // int Status;
-    // CFE_SRL_DevType_t DevType;
-
-    // if (Handle == NULL || Termios == NULL) return CFE_SRL_BAD_ARGUMENT;
-
-    // DevType = CFE_SRL_GetHandleDevType(Handle);
-    // if (DevType != SRL_DEVTYPE_UART && DevType != SRL_DEVTYPE_RS422) {
-    //     return -1; // Revise to `TYPE_NOT_UART`
-    // }
-
-    // Status = CFE_SRL_QueryStatus((CFE_SRL_Global_Handle_t *)Handle, CFE_SRL_HANDLE_STATUS_FD_INIT);
-    // if (Status == false) return CFE_SRL_NOT_OPEN_ERR;
-
-    // Status = tcsetattr(Handle->FD, TCSANOW, Termios);
-    // if (Status < 0) {
-    //     Handle->__errno = errno;
-    //     return -1; // Revise to `UART_SET_ATTR_ERR`
-    // }
-
-    return CFE_SUCCESS;
-}
-
-/**
- * Deprecated
- * Module use `CFE_SRL_BasicSetUART2` instead
- */
-=======
->>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
 int CFE_SRL_BasicSetUART(CFE_SRL_IO_Handle_t *Handle, uint32_t BaudRate) {
     // int Status;
     // struct termios Termios;
@@ -272,41 +192,7 @@ int CFE_SRL_BasicSetUART2(CFE_SRL_IO_Handle_t *Handle, uint32_t BaudRate) {
 
     // Output Flag
     Termios2.c_oflag &= ~(OPOST); // Post Process off
-<<<<<<< HEAD
 
-=======
-
-    Status = CFE_SRL_BasicIOCTL(Handle->FD, TCSETS2, &Termios2);
-    if (Status == -1) {
-        Handle->__errno = errno;
-        return -1; // Revise to `TCSETS2_ERR`
-    }
-    return CFE_SUCCESS;
-}
-
-/**
- * Change UART Baud rate
- */
-int CFE_SRL_ChangeBaudUART(CFE_SRL_IO_Handle_t *Handle, uint32_t BaudRate) {
-    int Status;
-    struct termios2 Termios2;
-
-    if (Handle == NULL) return CFE_SRL_BAD_ARGUMENT;
-
-    Status = CFE_SRL_BasicIOCTL(Handle->FD, TCGETS2, &Termios2);
-    if (Status == -1) {
-        Handle->__errno = errno;
-        return -1; // Revise to `TCGETS2_ERR`
-    }
-    /**
-     * Baud Rate Setting
-     */
-    Termios2.c_cflag &= ~CBAUD;
-    Termios2.c_cflag |= BOTHER;
-    Termios2.c_ispeed = BaudRate;
-    Termios2.c_ospeed = BaudRate;
-
->>>>>>> 9da93d5463f7574bd99ace62fa6f91688270af48
     Status = CFE_SRL_BasicIOCTL(Handle->FD, TCSETS2, &Termios2);
     if (Status == -1) {
         Handle->__errno = errno;
