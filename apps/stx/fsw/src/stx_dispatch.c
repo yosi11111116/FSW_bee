@@ -125,14 +125,15 @@ void STX_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
     uint8_t rxlength = 1;
 
     CFE_MSG_GetFcnCode(&SBBufPtr->Msg, &CommandCode);
-    
+    OS_printf("set: %zu\n", sizeof(STX_Set_t));
+    printf("Sbb: %zu \n", sizeof(CFE_SB_Buffer_t));
+    // const STX_Set_t *cmd = (const STX_Set_t *)SBBufPtr;
     switch (CommandCode)
     {
         case STX_SET_SYMBOLRATE:
-            if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set1_t)))
+            if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
             {
-
-                const STX_Set1_t *cmd = (const STX_Set1_t *)SBBufPtr;
+                const STX_Set_t *cmd = (const STX_Set_t *)SBBufPtr;
                 void *txdata = (void *)&cmd->Payload.data;
                 uint16_t txlength = sizeof(cmd->Payload.data);
 
@@ -296,7 +297,7 @@ void STX_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr){
             break;
 
         case STX_SET_MODULATOR_DATA_INTERFACE:
-            if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set_t)))
+            if (STX_VerifyCmdLength(&SBBufPtr->Msg, sizeof(STX_Set5_t)))
             {
                 const STX_Set5_t *cmd = (const STX_Set5_t *)SBBufPtr;
                 void *txdata = (void *)&cmd->Payload;
@@ -569,7 +570,7 @@ void STX_ProcessRequestedTelemetry(const CFE_SB_Buffer_t *SBBufPtr)
     uint16_t type;
 
     CFE_MSG_GetFcnCode(&SBBufPtr->Msg, &CommandCode);
-    void *rxdata = (void *)&STX_Data.SetTlm.Payload.data;
+    void *rxdata = (void *)&STX_Data.GetTlm.Payload.data;
 
     /*
     ** Process SAMPLE app ground commands
